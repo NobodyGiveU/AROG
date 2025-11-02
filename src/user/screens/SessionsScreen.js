@@ -9,11 +9,9 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
-  Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Video, ResizeMode } from 'expo-av';
-import { Asset } from 'expo-asset';
 import colors from '../../../colors';
 
 const SessionsScreen = () => {
@@ -22,7 +20,6 @@ const SessionsScreen = () => {
   const [uploadStatus, setUploadStatus] = useState(null); // null, 'analyzing', 'generating', 'completed'
   const [uploadedVideo, setUploadedVideo] = useState(null);
   const [videoUri, setVideoUri] = useState(null);
-  const [legPressVideoUri, setLegPressVideoUri] = useState(null);
   const videoRef = useRef(null);
 
   // Dummy data
@@ -50,29 +47,6 @@ const SessionsScreen = () => {
     },
   ];
 
-  // Load LegPress.mp4 video
-  React.useEffect(() => {
-    const loadVideo = async () => {
-      try {
-        // Option 1: Use local asset (if LegPress.mp4 is in assets/videos/)
-        // const asset = Asset.fromModule(require('../../../assets/videos/LegPress.mp4'));
-        // await asset.downloadAsync();
-        // setLegPressVideoUri(asset.localUri || asset.uri);
-        
-        // Option 2: Use remote URL (replace with your video URL)
-        // For now, using a sample URL - replace with your LegPress.mp4 URL
-        setLegPressVideoUri('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
-        
-        // Option 3: If you have the file locally, use:
-        // setLegPressVideoUri(Platform.OS === 'ios' 
-        //   ? 'file:///path/to/LegPress.mp4'
-        //   : '/sdcard/path/to/LegPress.mp4');
-      } catch (error) {
-        console.log('Error loading video:', error);
-      }
-    };
-    loadVideo();
-  }, []);
 
   const handleStartSession = () => {
     // Placeholder for starting a session
@@ -180,20 +154,18 @@ const SessionsScreen = () => {
           {uploadStatus === 'completed' && uploadedVideo && (
             <View style={styles.uploadCompleteContainer}>
               <Text style={styles.uploadCompleteText}>✅ Video Ready</Text>
-              <Text style={styles.videoFileName}>{uploadedVideo}</Text>
+              <Text style={styles.videoFileName}>AROG/{uploadedVideo}</Text>
               
-              {legPressVideoUri && (
-                <View style={styles.videoContainer}>
-                  <Video
-                    ref={videoRef}
-                    style={styles.video}
-                    source={{ uri: legPressVideoUri }}
-                    useNativeControls
-                    resizeMode={ResizeMode.CONTAIN}
-                    isLooping={false}
-                  />
-                </View>
-              )}
+              <View style={styles.videoContainer}>
+                <Video
+                  ref={videoRef}
+                  style={styles.video}
+                  source={require('../../../assets/videos/LegPress.mp4')}
+                  useNativeControls
+                  resizeMode={ResizeMode.CONTAIN}
+                  isLooping={false}
+                />
+              </View>
               
               <TouchableOpacity
                 style={styles.secondaryButton}
