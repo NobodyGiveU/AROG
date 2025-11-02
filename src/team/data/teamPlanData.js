@@ -1,0 +1,156 @@
+// Team exercises and personal rehab plans
+export const teamExercises = [
+  {
+    id: 1,
+    name: 'Group Warm-up',
+    sets: '1 set x 10 min',
+    setsCount: 1,
+    duration: 10,
+    completed: true,
+    category: 'Warm-up',
+    difficulty: 'Easy',
+    day: 'Monday',
+  },
+  {
+    id: 2,
+    name: 'Team Challenge Circuit',
+    sets: '3 rounds',
+    setsCount: 3,
+    duration: 20,
+    completed: true,
+    category: 'Challenge',
+    difficulty: 'Medium',
+    day: 'Monday',
+  },
+  {
+    id: 3,
+    name: 'Cool-down Stretches',
+    sets: '1 set x 5 min',
+    setsCount: 1,
+    duration: 5,
+    completed: false,
+    category: 'Cool-down',
+    difficulty: 'Easy',
+    day: 'Monday',
+  },
+  {
+    id: 4,
+    name: 'Group Strength Training',
+    sets: '3 sets x 12 reps',
+    setsCount: 3,
+    repsCount: 12,
+    completed: false,
+    category: 'Strength',
+    difficulty: 'Medium',
+    day: 'Wednesday',
+  },
+  {
+    id: 5,
+    name: 'Team Competition',
+    sets: '2 rounds',
+    setsCount: 2,
+    duration: 15,
+    completed: false,
+    category: 'Challenge',
+    difficulty: 'Hard',
+    day: 'Wednesday',
+  },
+];
+
+export const personalPlan = {
+  userId: 1,
+  userName: 'Alex Johnson',
+  exercises: [
+    {
+      id: 1,
+      name: 'Shoulder Mobility',
+      sets: '3 sets x 10 reps',
+      setsCount: 3,
+      repsCount: 10,
+      completed: true,
+      category: 'Mobility',
+      difficulty: 'Easy',
+      estimatedTime: '8 min',
+    },
+    {
+      id: 2,
+      name: 'Core Strengthening',
+      sets: '2 sets x 12 reps',
+      setsCount: 2,
+      repsCount: 12,
+      completed: true,
+      category: 'Strength',
+      difficulty: 'Medium',
+      estimatedTime: '10 min',
+    },
+    {
+      id: 3,
+      name: 'Balance Training',
+      sets: '2 sets x 5 reps',
+      setsCount: 2,
+      repsCount: 5,
+      completed: false,
+      category: 'Balance',
+      difficulty: 'Medium',
+      estimatedTime: '7 min',
+    },
+    {
+      id: 4,
+      name: 'Posture Exercises',
+      sets: '2 sets x 8 reps',
+      setsCount: 2,
+      repsCount: 8,
+      completed: false,
+      category: 'Posture',
+      difficulty: 'Easy',
+      estimatedTime: '5 min',
+    },
+    {
+      id: 5,
+      name: 'Lower Back Strengthening',
+      sets: '3 sets x 10 reps',
+      setsCount: 3,
+      repsCount: 10,
+      completed: false,
+      category: 'Strength',
+      difficulty: 'Medium',
+      estimatedTime: '12 min',
+    },
+  ],
+  weeklyGoals: {
+    exercisesCompleted: 2,
+    totalExercises: 5,
+    targetCompletion: 80,
+    currentCompletion: 40,
+  },
+};
+
+export const weeklyTeamPlan = {
+  weekStart: '2024-01-15',
+  weekEnd: '2024-01-21',
+  teamExercises: teamExercises.filter((ex) => ex.day === 'Monday' || ex.day === 'Wednesday'),
+  completedExercises: teamExercises.filter((ex) => ex.completed).length,
+  totalExercises: teamExercises.length,
+  progress: Math.round(
+    (teamExercises.filter((ex) => ex.completed).length / teamExercises.length) * 100
+  ),
+};
+
+export const exerciseCategories = [
+  'Warm-up',
+  'Cool-down',
+  'Strength',
+  'Cardio',
+  'Balance',
+  'Mobility',
+  'Challenge',
+  'Posture',
+];
+
+export default {
+  teamExercises,
+  personalPlan,
+  weeklyTeamPlan,
+  exerciseCategories,
+};
+

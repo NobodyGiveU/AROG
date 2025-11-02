@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Arog",
+    "slug": "arog",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#4A90E2"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.arog.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4A90E2"
+      },
+      "package": "com.arog.app"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
+
