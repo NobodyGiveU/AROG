@@ -22,7 +22,7 @@ const PortalSelectionScreen = ({ navigation }) => {
         navigation.navigate('ParentsPortal');
         break;
       case 'Team Portal':
-        navigation.navigate('TeamPortal');
+        navigation.navigate('JoinTeam');
         break;
       default:
         console.log(`Selected ${portal}`);

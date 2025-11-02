@@ -6,6 +6,7 @@ import colors from '../../../colors';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import PortalSelectionScreen from '../screens/PortalSelectionScreen';
+import JoinTeamScreen from '../../team/screens/JoinTeamScreen';
 
 // Portal navigators
 import UserNavigator from '../../user/navigation/UserNavigator';
@@ -40,6 +41,7 @@ const MainNavigator = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="PortalSelection" component={PortalSelectionScreen} />
+      <Stack.Screen name="JoinTeam" component={JoinTeamScreen} />
       <Stack.Screen
         name="UserPortal"
         component={UserNavigator}
