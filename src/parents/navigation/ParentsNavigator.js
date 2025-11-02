@@ -17,14 +17,14 @@ const ParentsNavigator = () => {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: colors.secondary,
+          backgroundColor: colors.primary,
         },
         headerTintColor: colors.white,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        tabBarActiveTintColor: colors.secondary,
-        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textPrimary,
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,

@@ -111,11 +111,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   parentsPortal: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
   },
   teamPortal: {
     backgroundColor: colors.primary,
-    opacity: 0.9,
   },
   portalButtonText: {
     fontSize: 20,
