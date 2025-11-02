@@ -95,11 +95,11 @@ export const recentEvents = [
 ];
 
 export const scheduleTypes = [
-  { id: 'exercise', label: 'Exercise', color: '#4A90E2' },
-  { id: 'challenge', label: 'Challenge', color: '#50C878' },
-  { id: 'review', label: 'Review', color: '#F39C12' },
-  { id: 'education', label: 'Education', color: '#9B59B6' },
-  { id: 'social', label: 'Social', color: '#E74C3C' },
+  { id: 'exercise', label: 'Exercise', color: '#FFC107' }, // Yellow
+  { id: 'challenge', label: 'Challenge', color: '#9C27B0' }, // Purple
+  { id: 'review', label: 'Review', color: '#FFE082' }, // Light Yellow
+  { id: 'education', label: 'Education', color: '#FFC107' }, // Yellow
+  { id: 'social', label: 'Social', color: '#9C27B0' }, // Purple
 ];
 
 export const thisWeekSchedule = weeklySchedule.filter(

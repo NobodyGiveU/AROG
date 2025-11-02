@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import colors from '../../../colors';
 
@@ -29,7 +30,11 @@ const PortalSelectionScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.appName}>Arog</Text>
+        <Image
+          source={require('../../../assets/images/AROG.png')}
+          style={styles.appLogo}
+          resizeMode="contain"
+        />
         <Text style={styles.subtitle}>Select your portal</Text>
 
         <View style={styles.portalContainer}>
@@ -72,11 +77,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  appName: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: colors.primary,
-    textAlign: 'center',
+  appLogo: {
+    width: 200,
+    height: 80,
+    alignSelf: 'center',
     marginBottom: 16,
   },
   subtitle: {

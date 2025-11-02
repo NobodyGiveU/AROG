@@ -17,9 +17,9 @@ const SettingsScreen = () => {
 
   // Dummy profile data
   const profileData = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    age: 32,
+    name: 'Sujal Thapa',
+    email: 'sujal124suj@gmail.com',
+    age: 20,
     memberSince: 'January 2024',
   };
 

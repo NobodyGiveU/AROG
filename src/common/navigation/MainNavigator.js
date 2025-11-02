@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import colors from '../../../colors';
 
 // Import screens
 import LoginScreen from '../screens/LoginScreen';
@@ -8,7 +9,7 @@ import PortalSelectionScreen from '../screens/PortalSelectionScreen';
 
 // Portal navigators
 import UserNavigator from '../../user/navigation/UserNavigator';
-import ParentsPortalScreen from '../../parents/screens/ParentsPortalScreen';
+import ParentsNavigator from '../../parents/navigation/ParentsNavigator';
 import TeamNavigator from '../../team/navigation/TeamNavigator';
 
 const Stack = createStackNavigator();
@@ -19,7 +20,7 @@ const MainNavigator = () => {
       initialRouteName="Login"
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: '#F5F5F5' },
+        cardStyle: { backgroundColor: colors.background },
         transitionSpec: {
           open: {
             animation: 'timing',
@@ -44,7 +45,11 @@ const MainNavigator = () => {
         component={UserNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="ParentsPortal" component={ParentsPortalScreen} />
+      <Stack.Screen
+        name="ParentsPortal"
+        component={ParentsNavigator}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="TeamPortal"
         component={TeamNavigator}

@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import colors from '../../../colors';
 
@@ -29,7 +30,11 @@ const LoginScreen = ({ navigation }) => {
         style={styles.keyboardView}
       >
         <View style={styles.content}>
-          <Text style={styles.appName}>Arog</Text>
+          <Image
+            source={require('../../../assets/images/AROG.png')}
+            style={styles.appLogo}
+            resizeMode="contain"
+          />
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
@@ -96,11 +101,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  appName: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: colors.primary,
-    textAlign: 'center',
+  appLogo: {
+    width: 200,
+    height: 80,
+    alignSelf: 'center',
     marginBottom: 48,
   },
   form: {

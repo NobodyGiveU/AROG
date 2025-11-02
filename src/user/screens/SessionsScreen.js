@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,23 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
+  Alert,
+  Platform,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Video, ResizeMode } from 'expo-av';
+import { Asset } from 'expo-asset';
 import colors from '../../../colors';
 
 const SessionsScreen = () => {
   const [sessionDuration, setSessionDuration] = useState('');
+  const [showHistory, setShowHistory] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(null); // null, 'analyzing', 'generating', 'completed'
+  const [uploadedVideo, setUploadedVideo] = useState(null);
+  const [videoUri, setVideoUri] = useState(null);
+  const [legPressVideoUri, setLegPressVideoUri] = useState(null);
+  const videoRef = useRef(null);
 
   // Dummy data
   const sessionHistory = [
@@ -38,14 +50,74 @@ const SessionsScreen = () => {
     },
   ];
 
+  // Load LegPress.mp4 video
+  React.useEffect(() => {
+    const loadVideo = async () => {
+      try {
+        // Option 1: Use local asset (if LegPress.mp4 is in assets/videos/)
+        // const asset = Asset.fromModule(require('../../../assets/videos/LegPress.mp4'));
+        // await asset.downloadAsync();
+        // setLegPressVideoUri(asset.localUri || asset.uri);
+        
+        // Option 2: Use remote URL (replace with your video URL)
+        // For now, using a sample URL - replace with your LegPress.mp4 URL
+        setLegPressVideoUri('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+        
+        // Option 3: If you have the file locally, use:
+        // setLegPressVideoUri(Platform.OS === 'ios' 
+        //   ? 'file:///path/to/LegPress.mp4'
+        //   : '/sdcard/path/to/LegPress.mp4');
+      } catch (error) {
+        console.log('Error loading video:', error);
+      }
+    };
+    loadVideo();
+  }, []);
+
   const handleStartSession = () => {
     // Placeholder for starting a session
     console.log('Start session');
   };
 
-  const handleUploadVideo = () => {
-    // Placeholder for video upload
-    console.log('Upload video');
+  const handleUploadVideo = async () => {
+    try {
+      // Request permission
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'Please grant permission to access your gallery');
+        return;
+      }
+
+      // Pick video from gallery
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        // Store the selected video URI
+        setVideoUri(result.assets[0].uri);
+        
+        // Simulate AI analysis process
+        setUploadStatus('analyzing');
+        setUploadedVideo(null);
+
+        // Simulate analyzing
+        setTimeout(() => {
+          setUploadStatus('generating');
+          
+          // Simulate generating video
+          setTimeout(() => {
+            setUploadStatus('completed');
+            setUploadedVideo('LegPress.mp4');
+          }, 2000);
+        }, 2000);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to upload video');
+      setUploadStatus(null);
+    }
   };
 
   return (
@@ -80,30 +152,87 @@ const SessionsScreen = () => {
           <Text style={styles.description}>
             Record and upload your exercise video for analysis
           </Text>
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleUploadVideo}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.secondaryButtonText}>Upload Video</Text>
-          </TouchableOpacity>
+          
+          {uploadStatus === null && (
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={handleUploadVideo}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.secondaryButtonText}>Upload Video</Text>
+            </TouchableOpacity>
+          )}
+
+          {uploadStatus === 'analyzing' && (
+            <View style={styles.uploadStatusContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={styles.uploadStatusText}>AI analyzing video...</Text>
+            </View>
+          )}
+
+          {uploadStatus === 'generating' && (
+            <View style={styles.uploadStatusContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={styles.uploadStatusText}>AI generating video...</Text>
+            </View>
+          )}
+
+          {uploadStatus === 'completed' && uploadedVideo && (
+            <View style={styles.uploadCompleteContainer}>
+              <Text style={styles.uploadCompleteText}>✅ Video Ready</Text>
+              <Text style={styles.videoFileName}>{uploadedVideo}</Text>
+              
+              {legPressVideoUri && (
+                <View style={styles.videoContainer}>
+                  <Video
+                    ref={videoRef}
+                    style={styles.video}
+                    source={{ uri: legPressVideoUri }}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    isLooping={false}
+                  />
+                </View>
+              )}
+              
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={handleUploadVideo}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.secondaryButtonText}>Upload Another</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         {/* Session History */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Session History</Text>
-          {sessionHistory.map((session) => (
-            <View key={session.id} style={styles.historyItem}>
-              <View style={styles.historyItemLeft}>
-                <Text style={styles.historyDate}>{session.date}</Text>
-                <Text style={styles.historyType}>{session.type}</Text>
-                <Text style={styles.historyDuration}>{session.duration}</Text>
-              </View>
-              <View style={styles.statusBadge}>
-                <Text style={styles.statusText}>{session.status}</Text>
-              </View>
+          <TouchableOpacity
+            style={styles.historyHeader}
+            onPress={() => setShowHistory(!showHistory)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.cardTitle}>Session History</Text>
+            <Text style={styles.dropdownArrow}>{showHistory ? '▼' : '▶'}</Text>
+          </TouchableOpacity>
+          
+          {showHistory && (
+            <View style={styles.historyContent}>
+              {sessionHistory.map((session) => (
+                <View key={session.id} style={styles.historyItem}>
+                  <View style={styles.historyItemLeft}>
+                    <Text style={styles.historyDate}>{session.date}</Text>
+                    <Text style={styles.historyType}>{session.type}</Text>
+                    <Text style={styles.historyDuration}>{session.duration}</Text>
+                  </View>
+                  <View style={styles.statusBadge}>
+                    <Text style={styles.statusText}>{session.status}</Text>
+                  </View>
+                </View>
+              ))}
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -190,6 +319,57 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginBottom: 8,
   },
+  uploadStatusContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  uploadStatusText: {
+    fontSize: 16,
+    color: colors.primary,
+    marginTop: 12,
+    fontWeight: '600',
+  },
+  uploadCompleteContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  uploadCompleteText: {
+    fontSize: 18,
+    color: colors.success,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  videoFileName: {
+    fontSize: 16,
+    color: colors.text,
+    fontWeight: '500',
+    marginBottom: 16,
+  },
+  videoContainer: {
+    width: '100%',
+    height: 250,
+    backgroundColor: '#000',
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginVertical: 16,
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+  },
+  historyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  dropdownArrow: {
+    fontSize: 16,
+    color: colors.textSecondary,
+  },
+  historyContent: {
+    marginTop: 8,
+  },
   historyItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -230,4 +410,3 @@ const styles = StyleSheet.create({
 });
 
 export default SessionsScreen;
-

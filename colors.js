@@ -1,12 +1,16 @@
 export default {
-  primary: '#4A90E2',
-  secondary: '#50C878',
-  background: '#F5F5F5',
+  primary: '#FFC107', // Yellow - main color for buttons, headers, primary actions
+  secondary: '#9C27B0', // Purple - secondary color, success states, accents
+  background: '#FFFBF0', // Light yellow background
   white: '#FFFFFF',
   text: '#333333',
   textSecondary: '#666666',
-  border: '#E0E0E0',
-  error: '#E74C3C',
-  success: '#27AE60',
+  border: '#FFE082', // Light yellow border
+  error: '#F44336', // Red error color
+  success: '#4CAF50', // Green success color
+  yellow: '#FFC107', // Main yellow
+  purple: '#9C27B0', // Main purple
+  lightYellow: '#FFF9E6', // Light yellow for backgrounds
+  lightPurple: '#F3E5F5', // Light purple for backgrounds
 };
 

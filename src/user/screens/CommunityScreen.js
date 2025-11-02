@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import {
 import colors from '../../../colors';
 
 const CommunityScreen = () => {
-  // Dummy data
+  const [joinedChallenges, setJoinedChallenges] = useState([]);
+
+  // Dummy data with updated names
   const buddies = [
-    { id: 1, name: 'John Doe', status: 'Active', streak: 7 },
-    { id: 2, name: 'Jane Smith', status: 'Active', streak: 5 },
-    { id: 3, name: 'Mike Johnson', status: 'Offline', streak: 3 },
+    { id: 1, name: 'Sujal T', status: 'Active', streak: 7 },
+    { id: 2, name: 'Jeevan Smith', status: 'Active', streak: 5 },
+    { id: 3, name: 'Prashana Johnson', status: 'Offline', streak: 3 },
   ];
 
   const challenges = [
@@ -30,6 +32,14 @@ const CommunityScreen = () => {
     { rank: 4, name: 'Lisa Anderson', points: 1950 },
     { rank: 5, name: 'David Lee', points: 1800 },
   ];
+
+  const handleJoinChallenge = (challengeId) => {
+    if (joinedChallenges.includes(challengeId)) {
+      setJoinedChallenges(joinedChallenges.filter((id) => id !== challengeId));
+    } else {
+      setJoinedChallenges([...joinedChallenges, challengeId]);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,24 +71,32 @@ const CommunityScreen = () => {
         {/* Challenges Section */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Active Challenges</Text>
-          {challenges.map((challenge) => (
-            <View key={challenge.id} style={styles.challengeItem}>
-              <View style={styles.challengeContent}>
-                <Text style={styles.challengeTitle}>{challenge.title}</Text>
-                <View style={styles.challengeStats}>
-                  <Text style={styles.challengeStat}>
-                    👥 {challenge.participants} participants
-                  </Text>
-                  <Text style={styles.challengeStat}>
-                    ⏰ {challenge.daysLeft} days left
-                  </Text>
+          {challenges.map((challenge) => {
+            const isJoined = joinedChallenges.includes(challenge.id);
+            return (
+              <View key={challenge.id} style={styles.challengeItem}>
+                <View style={styles.challengeContent}>
+                  <Text style={styles.challengeTitle}>{challenge.title}</Text>
+                  <View style={styles.challengeStats}>
+                    <Text style={styles.challengeStat}>
+                      👥 {challenge.participants} participants
+                    </Text>
+                    <Text style={styles.challengeStat}>
+                      ⏰ {challenge.daysLeft} days left
+                    </Text>
+                  </View>
                 </View>
+                <TouchableOpacity
+                  style={[styles.joinButton, isJoined && styles.joinedButton]}
+                  onPress={() => handleJoinChallenge(challenge.id)}
+                >
+                  <Text style={[styles.joinButtonText, isJoined && styles.joinedButtonText]}>
+                    {isJoined ? 'Joined' : 'Join'}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.joinButton}>
-                <Text style={styles.joinButtonText}>Join</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* Leaderboard Section */}
@@ -212,9 +230,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 8,
   },
+  joinedButton: {
+    backgroundColor: colors.success,
+  },
   joinButtonText: {
     fontSize: 14,
     fontWeight: '600',
+    color: colors.white,
+  },
+  joinedButtonText: {
     color: colors.white,
   },
   leaderboardItem: {
@@ -254,4 +278,3 @@ const styles = StyleSheet.create({
 });
 
 export default CommunityScreen;
-
