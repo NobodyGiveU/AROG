@@ -9,8 +9,8 @@ Your Arog app is **100% ready** to deploy to Vercel. All necessary files have be
 ## 📁 Files Created/Updated:
 
 ### ✅ `vercel.json` - Vercel Configuration
-- **Build Command**: `npx expo export:web`
-- **Output Directory**: `web-build`
+- **Build Command**: `npm run build` (uses `expo export --platform web`)
+- **Output Directory**: `dist`
 - **Routing**: All routes rewrite to `index.html` (SPA routing ✅)
 - **Caching**: Static assets cached for optimal performance
 
@@ -19,8 +19,9 @@ Your Arog app is **100% ready** to deploy to Vercel. All necessary files have be
 - Reduces deployment size and time
 
 ### ✅ `package.json` - Build Scripts Added
-- `npm run build:web` - Build for web
-- `npm run preview` - Preview build locally
+- `npm run build` - Build for web (for Vercel)
+- `npm run build:web` - Build for web (alias)
+- `npm run preview` - Preview build locally (serves from `dist`)
 
 ### ✅ `app.json` - Web Configuration
 - Web bundler configured
@@ -67,10 +68,10 @@ vercel --prod
 ## 🧪 Test Before Deploying:
 
 ```bash
-# Build for web
-npm run build:web
+# Build for web (outputs to dist/)
+npm run build
 
-# Preview locally
+# Preview locally (serves dist/)
 npm run preview
 ```
 
