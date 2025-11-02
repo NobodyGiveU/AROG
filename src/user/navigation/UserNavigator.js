@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
 
 // Import screens
@@ -8,7 +9,6 @@ import HomeScreen from '../screens/HomeScreen';
 import SessionsScreen from '../screens/SessionsScreen';
 import PlanScreen from '../screens/PlanScreen';
 import CommunityScreen from '../screens/CommunityScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,14 +46,20 @@ const UserNavigator = () => {
         options={{
           tabBarLabel: 'Home',
           headerTitle: 'Home',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
         name="Sessions"
         component={SessionsScreen}
         options={{
-          tabBarLabel: 'Sessions',
+          tabBarLabel: 'Session',
           headerTitle: 'Sessions',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'play' : 'play-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -62,6 +68,9 @@ const UserNavigator = () => {
         options={{
           tabBarLabel: 'Plan',
           headerTitle: 'Daily Plan',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -70,14 +79,9 @@ const UserNavigator = () => {
         options={{
           tabBarLabel: 'Community',
           headerTitle: 'Community',
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: 'Settings',
-          headerTitle: 'Settings',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>
