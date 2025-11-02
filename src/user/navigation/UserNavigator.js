@@ -6,7 +6,7 @@ import colors from '../../../colors';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
-import SessionsScreen from '../screens/SessionsScreen';
+import SessionNavigator from './SessionNavigator';
 import PlanScreen from '../screens/PlanScreen';
 import CommunityScreen from '../screens/CommunityScreen';
 
@@ -52,13 +52,13 @@ const UserNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Sessions"
-        component={SessionsScreen}
+        name="Session"
+        component={SessionNavigator}
         options={{
           tabBarLabel: 'Session',
-          headerTitle: 'Sessions',
+          headerShown: false,
           tabBarIcon: ({ focused, color }) => (
-            <Ionicons name={focused ? 'play' : 'play-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'play-circle' : 'play-circle-outline'} size={24} color={color} />
           ),
         }}
       />
