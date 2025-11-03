@@ -74,11 +74,11 @@ const UserNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Community"
+        name="Team"
         component={CommunityScreen}
         options={{
-          tabBarLabel: 'Community',
-          headerTitle: 'Community',
+          tabBarLabel: 'Team',
+          headerTitle: 'Team',
           tabBarIcon: ({ focused, color }) => (
             <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
           ),
