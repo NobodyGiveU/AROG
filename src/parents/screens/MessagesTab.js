@@ -242,6 +242,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
+    width: '100%',
+    overflow: 'hidden',
   },
   messageHeader: {
     flexDirection: 'row',
