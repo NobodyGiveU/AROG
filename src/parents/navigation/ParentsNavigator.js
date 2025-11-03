@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
 
 // Import screens
@@ -26,8 +27,8 @@ const ParentsDashboardNavigator = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textPrimary,
+        tabBarActiveTintColor: '#8B5CF6', // Purple color from the design
+        tabBarInactiveTintColor: colors.textSecondary,
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
@@ -39,6 +40,7 @@ const ParentsDashboardNavigator = () => {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
+          marginTop: -5,
         },
       }}
     >
@@ -48,6 +50,15 @@ const ParentsDashboardNavigator = () => {
         options={{
           tabBarLabel: 'Home',
           headerTitle: 'Guardian Dashboard',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons 
+              name={focused ? 'home' : 'home-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
+          tabBarActiveTintColor: '#8B5CF6', // Purple for Home
+          tabBarInactiveTintColor: '#6B7280',
         }}
       />
       <Tab.Screen
@@ -56,6 +67,13 @@ const ParentsDashboardNavigator = () => {
         options={{
           tabBarLabel: 'Child',
           headerTitle: 'Child Progress',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons 
+              name={focused ? 'happy' : 'happy-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -64,6 +82,13 @@ const ParentsDashboardNavigator = () => {
         options={{
           tabBarLabel: 'Messages',
           headerTitle: 'Messages',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons 
+              name={focused ? 'chatbubble' : 'chatbubble-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
         }}
       />
       <Tab.Screen
@@ -72,14 +97,13 @@ const ParentsDashboardNavigator = () => {
         options={{
           tabBarLabel: 'Resources',
           headerTitle: 'Resources',
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsTab}
-        options={{
-          tabBarLabel: 'Settings',
-          headerTitle: 'Settings',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons 
+              name={focused ? 'book' : 'book-outline'} 
+              size={24} 
+              color={color} 
+            />
+          ),
         }}
       />
     </Tab.Navigator>
