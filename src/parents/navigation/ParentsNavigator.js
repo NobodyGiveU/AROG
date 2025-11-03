@@ -1,17 +1,20 @@
 import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import colors from '../../../colors';
 
 // Import screens
+import ParentsPortalScreen from '../screens/ParentsPortalScreen';
 import HomeTab from '../screens/HomeTab';
 import ChildTab from '../screens/ChildTab';
 import MessagesTab from '../screens/MessagesTab';
 import ResourcesTab from '../screens/ResourcesTab';
 import SettingsTab from '../screens/SettingsTab';
 
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const ParentsNavigator = () => {
+const ParentsDashboardNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -80,6 +83,15 @@ const ParentsNavigator = () => {
         }}
       />
     </Tab.Navigator>
+  );
+};
+
+const ParentsNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ParentsPortalScreen" component={ParentsPortalScreen} />
+      <Stack.Screen name="ParentsDashboard" component={ParentsDashboardNavigator} />
+    </Stack.Navigator>
   );
 };
 
