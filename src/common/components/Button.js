@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const Button = ({
   title,

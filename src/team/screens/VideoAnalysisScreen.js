@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const VideoAnalysisScreen = ({ navigation }) => {
   const pastAnalyses = [

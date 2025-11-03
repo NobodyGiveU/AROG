@@ -10,7 +10,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');

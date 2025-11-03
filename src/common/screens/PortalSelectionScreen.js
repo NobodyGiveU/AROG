@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const PortalSelectionScreen = ({ navigation }) => {
   const handlePortalSelection = (portal) => {

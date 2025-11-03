@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const SettingsTab = () => {
   const [riskAlerts, setRiskAlerts] = useState(true);

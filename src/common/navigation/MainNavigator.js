@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 // Import screens
 import LoginScreen from '../screens/LoginScreen';

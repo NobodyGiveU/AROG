@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const HomeTab = () => {
   const [selectedChild, setSelectedChild] = useState('Emma Johnson (14)');

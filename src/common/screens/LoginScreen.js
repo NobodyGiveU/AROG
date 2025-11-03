@@ -10,7 +10,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');

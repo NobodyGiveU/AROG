@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const CommunityScreen = ({ navigation }) => {
   const [feedFilter, setFeedFilter] = useState('All'); // All, Coach, Teammates

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Video, ResizeMode } from 'expo-av';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const SessionsScreen = () => {
   const [sessionDuration, setSessionDuration] = useState('');

@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const TeamScreen = () => {
   // Dummy data

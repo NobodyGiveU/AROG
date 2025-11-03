@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import colors from '../../../colors';
+import colors from '../../config/colors';
 
 const ParentsPortalScreen = ({ navigation }) => {
   const [inviteCode, setInviteCode] = useState('');
