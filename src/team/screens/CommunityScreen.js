@@ -185,19 +185,17 @@ const CommunityScreen = ({ navigation }) => {
 
   const renderTeamInsights = () => (
     <View style={styles.section}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Team Insights & Highlights</Text>
-        <View style={styles.insightTabs}>
-          <TouchableOpacity style={styles.activeTab}>
-            <Text style={styles.activeTabText}>Weekly</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.inactiveTab}>
-            <Text style={styles.inactiveTabText}>Monthly</Text>
-          </TouchableOpacity>
-        </View>
+      <Text style={styles.sectionTitle}>Team Insights & Highlights</Text>
+      <View style={styles.insightTabs}>
+        <TouchableOpacity style={styles.activeTab}>
+          <Text style={styles.activeTabText}>Weekly</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.inactiveTab}>
+          <Text style={styles.inactiveTabText}>Monthly</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.insightsContainer}>
+      <View style={[styles.insightsContainer, styles.insightMarginTop]}>
         <View style={styles.insightCard}>
           <Text style={styles.insightLabel}>Avg Safe-Movement</Text>
           <Text style={styles.insightValue}>89%</Text>
@@ -265,27 +263,25 @@ const CommunityScreen = ({ navigation }) => {
 
   const renderTeamFeed = () => (
     <View style={styles.section}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Team Feed / Updates</Text>
-        <View style={styles.feedFilters}>
-          {['All', 'Coach', 'Teammates'].map((filter) => (
-            <TouchableOpacity
-              key={filter}
-              style={[styles.filterButton, feedFilter === filter && styles.activeFilter]}
-              onPress={() => setFeedFilter(filter)}
-            >
-              <Text style={[
-                styles.filterButtonText,
-                feedFilter === filter && styles.activeFilterText
-              ]}>
-                {filter}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+      <Text style={styles.sectionTitle}>Team Feed / Updates</Text>
+      <View style={styles.feedFilters}>
+        {['All', 'Coach', 'Teammates'].map((filter) => (
+          <TouchableOpacity
+            key={filter}
+            style={[styles.filterButton, feedFilter === filter && styles.activeFilter]}
+            onPress={() => setFeedFilter(filter)}
+          >
+            <Text style={[
+              styles.filterButtonText,
+              feedFilter === filter && styles.activeFilterText
+            ]}>
+              {filter}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
-      <View style={styles.feedItems}>
+      <View style={[styles.feedItems, styles.feedMarginTop]}>
         <View style={styles.feedItem}>
           <View style={[styles.feedAvatar, { backgroundColor: '#E9D5FF' }]}>
             <Text style={[styles.feedInitials, { color: '#8B5CF6' }]}>CM</Text>
@@ -656,6 +652,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F5F9',
     borderRadius: 20,
     padding: 2,
+    marginTop: 12,
+    alignSelf: 'flex-start',
+  },
+  insightMarginTop: {
+    marginTop: 16,
   },
   activeTab: {
     backgroundColor: '#000',
@@ -790,6 +791,11 @@ const styles = StyleSheet.create({
   feedFilters: {
     flexDirection: 'row',
     gap: 8,
+    marginTop: 12,
+    flexWrap: 'wrap',
+  },
+  feedMarginTop: {
+    marginTop: 16,
   },
   activeFilter: {
     backgroundColor: colors.primary,
