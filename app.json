@@ -7,7 +7,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#FFC107"
+      "backgroundColor": "#3B82F6"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFC107"
+        "backgroundColor": "#3B82F6"
       },
       "package": "com.arog.app"
     },
