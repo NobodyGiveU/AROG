@@ -1,564 +1,852 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { MaterialCommunityIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import colors from '../../../colors';
 
-const TRAINING_BUDDIES = [
-  {
-    id: 1,
-    initials: 'SC',
-    name: 'Sarah Chen',
-    sport: 'Soccer',
-    status: 'Active',
-    riskScore: 24,
-    weeklyGoal: { completed: 4, total: 5 }
-  },
-  {
-    id: 2,
-    initials: 'MR',
-    name: 'Marcus Rodriguez',
-    sport: 'Basketball',
-    status: 'Active',
-    riskScore: 31,
-    weeklyGoal: { completed: 5, total: 5 }
-  },
-  {
-    id: 3,
-    initials: 'EW',
-    name: 'Emma Williams',
-    sport: 'Volleyball',
-    status: 'Resting',
-    riskScore: 19,
-    weeklyGoal: { completed: 3, total: 6 }
-  }
-];
+const CommunityScreen = ({ navigation }) => {
+  const [feedFilter, setFeedFilter] = useState('All'); // All, Coach, Teammates
 
-const LEADERBOARD = [
-  { rank: 1, initials: 'EW', name: 'Emma Williams', points: 2847, change: '+2' },
-  { rank: 2, initials: 'AJ', name: 'Alex Johnson', points: 2693, change: '-' },
-  { rank: 3, initials: 'MR', name: 'Marcus Rodriguez', points: 2541, change: '+1' },
-  { rank: 4, initials: 'SC', name: 'Sarah Chen', points: 2398, change: '-2' },
-  { rank: 5, initials: 'JL', name: 'Jordan Lee', points: 2156, change: '+1' }
-];
-
-const CommunityScreen = () => {
-  const renderActiveChallenge = () => (
-    <View style={styles.challengeCard}>
-      <View style={styles.challengeHeader}>
-        <View style={styles.trophyContainer}>
-          <MaterialCommunityIcons name="trophy" size={24} color="#fff" />
-        </View>
-        <View style={styles.challengeInfo}>
-          <Text style={styles.challengeTitle}>Active Challenge</Text>
-          <Text style={styles.challengeName}>November Movement Challenge</Text>
-        </View>
-        <View style={styles.streakBadge}>
-          <Ionicons name="flame" size={16} color="#fff" />
-          <Text style={styles.streakText}>5 day streak</Text>
-        </View>
-      </View>
-
-      <Text style={styles.challengeDescription}>
-        Complete 20 training sessions this month
-      </Text>
-
-      <View style={styles.progressSection}>
-        <Text style={styles.progressLabel}>Progress</Text>
-        <Text style={styles.sessionCount}>12/20 sessions</Text>
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: '60%' }]} />
-        </View>
-      </View>
-
-      <View style={styles.challengeFooter}>
-        <View style={styles.participantsInfo}>
-          <MaterialCommunityIcons name="account-group" size={20} color="#fff" />
-          <Text style={styles.participantsText}>156 participants</Text>
-        </View>
-        <Text style={styles.daysLeft}>14 days left</Text>
+  const renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.headerTop}>
+        <Text style={styles.headerTitle}>AROG</Text>
+        <Text style={styles.headerSubtitle}>Team Hub</Text>
       </View>
     </View>
   );
 
-  const renderBuddyCard = (buddy) => (
-    <View key={buddy.id} style={styles.buddyCard}>
-      <View style={styles.buddyHeader}>
-        <View style={styles.buddyAvatarSection}>
-          <View style={styles.avatarCircle}>
-            <Text style={styles.avatarText}>{buddy.initials}</Text>
-          </View>
-          <View style={[styles.statusDot, 
-            { backgroundColor: buddy.status === 'Active' ? '#4CAF50' : '#9E9E9E' }]} />
-        </View>
+  const renderTeamHub = () => (
+    <View style={styles.gradientCard}>
+      <LinearGradient
+        colors={['#FFB800', '#FF8A00']}
+        style={styles.gradient}
+      >
+        <Text style={styles.gradientTitle}>Team Hub</Text>
+        <Text style={styles.gradientSubtitle}>
+          Empowering every athlete through collaboration
+        </Text>
         
-        <View style={styles.buddyInfo}>
-          <View style={styles.nameRow}>
-            <Text style={styles.buddyName}>{buddy.name}</Text>
-            <View style={[styles.statusBadge, 
-              { backgroundColor: buddy.status === 'Active' ? '#E8F5E9' : '#F5F5F5' }]}>
-              <Text style={[styles.statusText, 
-                { color: buddy.status === 'Active' ? '#4CAF50' : '#9E9E9E' }]}>
-                {buddy.status}
-              </Text>
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>5</Text>
+            <Text style={styles.statLabel}>Athletes</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>2</Text>
+            <Text style={styles.statLabel}>Challenges</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>3 PM</Text>
+            <Text style={styles.statLabel}>Tomorrow</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.viewDetailsButton}>
+          <Text style={styles.viewDetailsText}>View Details</Text>
+          <Ionicons name="chevron-forward" size={20} color="#FFF" />
+        </TouchableOpacity>
+      </LinearGradient>
+    </View>
+  );
+
+  const renderTeamSchedule = () => (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Team Schedule</Text>
+        <TouchableOpacity style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>This Week</Text>
+        </TouchableOpacity>
+      </View>
+
+      {[
+        { day: 'Monday', title: 'Group Exercise', time: '3 PM', location: 'Gym A' },
+        { day: 'Wednesday', title: 'Team Challenge', time: '3 PM', location: 'Gym B' },
+        { day: 'Friday', title: 'Progress Review', time: '3 PM', location: 'Gym A' },
+      ].map((event, index) => (
+        <View key={index} style={styles.scheduleItem}>
+          <View style={styles.scheduleStatus} />
+          <View style={styles.scheduleIconContainer}>
+            <Ionicons
+              name={index === 1 ? "trophy" : index === 2 ? "stats-chart" : "fitness"}
+              size={24}
+              color={colors.primary}
+            />
+          </View>
+          <View style={styles.scheduleContent}>
+            <Text style={styles.scheduleTitle}>{event.day} — {event.title}</Text>
+            <View style={styles.scheduleDetails}>
+              <Ionicons name="time-outline" size={16} color={colors.textSecondary} />
+              <Text style={styles.scheduleText}>{event.time}</Text>
+              <Ionicons name="location-outline" size={16} color={colors.textSecondary} />
+              <Text style={styles.scheduleText}>{event.location}</Text>
             </View>
           </View>
-          <Text style={styles.sportText}>{buddy.sport}</Text>
         </View>
+      ))}
 
-        <View style={styles.riskScoreContainer}>
-          <Text style={styles.riskScoreLabel}>Risk Score</Text>
-          <Text style={styles.riskScoreValue}>{buddy.riskScore}</Text>
-        </View>
-      </View>
-
-      <View style={styles.goalSection}>
-        <Text style={styles.goalLabel}>Weekly Goal</Text>
-        <Text style={styles.goalProgress}>
-          {buddy.weeklyGoal.completed}/{buddy.weeklyGoal.total} sessions
-        </Text>
-        <View style={styles.goalBar}>
-          <View 
-            style={[
-              styles.goalFill, 
-              { width: `${(buddy.weeklyGoal.completed / buddy.weeklyGoal.total) * 100}%` }
-            ]} 
-          />
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.messageButton}>
-          <MaterialCommunityIcons name="message-outline" size={24} color="#FFFFFF" />
+      <TouchableOpacity style={styles.viewMoreButton}>
+        <Text style={styles.viewMoreText}>View Full Schedule</Text>
+        <Ionicons name="arrow-forward" size={16} color={colors.primary} />
       </TouchableOpacity>
     </View>
   );
 
+  const renderTeamBuddies = () => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Team Buddies</Text>
+      <View style={styles.buddiesContainer}>
+        {[
+          { initials: 'AJ', name: 'Alex Johnson', streak: '10d' },
+          { initials: 'MG', name: 'Maria Garcia', streak: '7d' },
+        ].map((buddy, index) => (
+          <View key={index} style={styles.buddyCard}>
+            <View style={styles.buddyHeader}>
+              <View style={styles.buddyAvatar}>
+                <Text style={styles.buddyInitials}>{buddy.initials}</Text>
+              </View>
+              <View style={styles.onlineIndicator} />
+            </View>
+            <Text style={styles.buddyName}>{buddy.name}</Text>
+            <View style={styles.streakBadge}>
+              <Ionicons name="flame" size={16} color="#FFF" />
+              <Text style={styles.streakText}>{buddy.streak}</Text>
+            </View>
+            <TouchableOpacity style={styles.chatButton}>
+              <Ionicons name="chatbubble-outline" size={20} color={colors.text} />
+              <Text style={styles.chatButtonText}>Chat</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+
+  const renderActiveChallenges = () => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Active Challenges</Text>
+      
+      {[
+        {
+          title: 'Team Weekly Goal',
+          participants: 5,
+          daysLeft: 3,
+          progress: 75,
+          top: 'Emma Johnson',
+          color: '#8B5CF6',
+        },
+        {
+          title: 'Group Exercise Challenge',
+          participants: 4,
+          daysLeft: 5,
+          progress: 60,
+          top: 'Maria Garcia',
+          color: '#FF8A00',
+        },
+      ].map((challenge, index) => (
+        <View key={index} style={[styles.challengeCard, { backgroundColor: challenge.color }]}>
+          <View style={styles.challengeHeader}>
+            <Text style={styles.challengeTitle}>{challenge.title}</Text>
+            <Ionicons name="trophy" size={24} color="#FFF" />
+          </View>
+          <View style={styles.challengeStats}>
+            <Ionicons name="people" size={16} color="#FFF" />
+            <Text style={styles.challengeStatsText}>{challenge.participants} participants</Text>
+            <Text style={styles.challengeBullet}>•</Text>
+            <Text style={styles.challengeStatsText}>{challenge.daysLeft} days left</Text>
+          </View>
+          <View style={styles.progressSection}>
+            <Text style={styles.progressLabel}>Progress</Text>
+            <View style={styles.progressContainer}>
+              <View style={[styles.progressBar, { width: `${challenge.progress}%` }]} />
+            </View>
+            <Text style={styles.progressPercentage}>{challenge.progress}%</Text>
+          </View>
+          <View style={styles.challengeFooter}>
+            <View style={styles.topPerformer}>
+              <Ionicons name="medal" size={16} color="#FFD700" />
+              <Text style={styles.topPerformerText}>Top: {challenge.top}</Text>
+            </View>
+            <TouchableOpacity style={styles.viewButton}>
+              <Text style={styles.viewButtonText}>View</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+
+  const renderTeamInsights = () => (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Team Insights & Highlights</Text>
+        <View style={styles.insightTabs}>
+          <TouchableOpacity style={styles.activeTab}>
+            <Text style={styles.activeTabText}>Weekly</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.inactiveTab}>
+            <Text style={styles.inactiveTabText}>Monthly</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.insightsContainer}>
+        <View style={styles.insightCard}>
+          <Text style={styles.insightLabel}>Avg Safe-Movement</Text>
+          <Text style={styles.insightValue}>89%</Text>
+        </View>
+        <View style={styles.insightCard}>
+          <Text style={styles.insightLabel}>Team Trend</Text>
+          <Text style={[styles.insightValue, styles.trendPositive]}>+12%</Text>
+        </View>
+      </View>
+
+      <View style={styles.insightMessage}>
+        <Text style={styles.messageText}>
+          Your team improved risk awareness by <Text style={styles.highlightText}>15%</Text> this week
+          — keep training together!
+        </Text>
+      </View>
+    </View>
+  );
+
   const renderLeaderboard = () => (
-    <View style={styles.leaderboardSection}>
-      <View style={styles.leaderboardHeader}>
-        <MaterialCommunityIcons name="trophy-outline" size={24} color="#1A1A1A" />
-        <Text style={styles.leaderboardTitle}>Weekly Leaderboard</Text>
-        <TouchableOpacity>
-          <MaterialIcons name="info-outline" size={20} color="#1A1A1A" />
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Team Leaderboard</Text>
+        <TouchableOpacity style={styles.filterButton}>
+          <Ionicons name="trophy" size={16} color="#FFD700" />
+          <Text style={styles.filterButtonText}>Top 5</Text>
         </TouchableOpacity>
       </View>
 
-      {LEADERBOARD.map((player, index) => (
-        <View 
-          key={player.rank} 
-          style={[
-            styles.leaderboardRow,
-            { backgroundColor: index === 0 ? '#FFF9C4' : 
-              index === 1 ? '#FFFFFF' :
-              index === 2 ? '#FFE0B2' : '#FFFFFF' }
-          ]}
-        >
-          <View style={styles.rankSection}>
-            <Text style={styles.rankNumber}>{player.rank}</Text>
-            <View style={styles.playerAvatar}>
-              <Text style={styles.playerInitials}>{player.initials}</Text>
-            </View>
+      {[
+        { rank: 1, initials: 'EW', name: 'Emma Williams', points: 2847, change: '+2' },
+        { rank: 2, initials: 'AJ', name: 'Alex Johnson', points: 2693, change: '-' },
+        { rank: 3, initials: 'MR', name: 'Marcus Rodriguez', points: 2541, change: '+1' },
+        { rank: 4, initials: 'SC', name: 'Sarah Chen', points: 2389, change: '-1' },
+        { rank: 5, initials: 'JL', name: 'Jordan Lee', points: 2156, change: '+1' },
+      ].map((player, index) => (
+        <View key={index} style={styles.leaderboardItem}>
+          <View style={[styles.rankContainer, index === 0 && styles.rankFirst]}>
+            <Text style={[styles.rankText, index === 0 && styles.rankFirstText]}>
+              {player.rank}
+            </Text>
           </View>
-
+          <View style={styles.playerAvatar}>
+            <Text style={styles.playerInitials}>{player.initials}</Text>
+          </View>
           <View style={styles.playerInfo}>
             <Text style={styles.playerName}>{player.name}</Text>
             <Text style={styles.playerPoints}>{player.points} pts</Text>
           </View>
-
           <Text style={[
-            styles.changeIndicator,
-            { color: player.change.startsWith('+') ? '#4CAF50' : 
-              player.change === '-' ? '#9E9E9E' : '#F44336' }
+            styles.playerChange,
+            player.change.startsWith('+') ? styles.changePositive : 
+            player.change === '-' ? styles.changeNeutral : styles.changeNegative
           ]}>
             {player.change}
           </Text>
         </View>
       ))}
 
-      <Text style={styles.leaderboardUpdate}>Leaderboard updates every Monday</Text>
+      <Text style={styles.leaderboardUpdate}>
+        Leaderboard updates every Monday
+      </Text>
+    </View>
+  );
 
-      <View style={styles.inviteSection}>
-        <View style={styles.inviteContent}>
-          <MaterialCommunityIcons name="target" size={24} color="#007AFF" />
-          <View style={styles.inviteTextContainer}>
-            <Text style={styles.inviteTitle}>Invite your friends!</Text>
-            <Text style={styles.inviteDescription}>
-              Training together reduces injury risk by 40% and boosts motivation.
+  const renderTeamFeed = () => (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Team Feed / Updates</Text>
+        <View style={styles.feedFilters}>
+          {['All', 'Coach', 'Teammates'].map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              style={[styles.filterButton, feedFilter === filter && styles.activeFilter]}
+              onPress={() => setFeedFilter(filter)}
+            >
+              <Text style={[
+                styles.filterButtonText,
+                feedFilter === filter && styles.activeFilterText
+              ]}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.feedItems}>
+        <View style={styles.feedItem}>
+          <View style={[styles.feedAvatar, { backgroundColor: '#E9D5FF' }]}>
+            <Text style={[styles.feedInitials, { color: '#8B5CF6' }]}>CM</Text>
+          </View>
+          <View style={styles.feedContent}>
+            <Text style={styles.feedText}>
+              <Text style={styles.feedName}>Coach Martinez</Text> shared new warm-up drills
             </Text>
+            <Text style={styles.feedTime}>2h ago</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.inviteButton}>
-          <Text style={styles.inviteButtonText}>Invite</Text>
+
+        <View style={styles.feedItem}>
+          <View style={styles.feedAvatar}>
+            <Text style={styles.feedInitials}>MG</Text>
+          </View>
+          <View style={styles.feedContent}>
+            <Text style={styles.feedText}>
+              <Text style={styles.feedName}>Maria Garcia</Text> achieved a 7-day streak
+            </Text>
+            <Text style={styles.feedTime}>4h ago</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.postUpdateButton}>
+          <Ionicons name="send" size={20} color={colors.textSecondary} />
+          <Text style={styles.postUpdateText}>Post Update</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <ScrollView style={styles.container}>
-      {renderActiveChallenge()}
-      
-      <View style={styles.buddiesSection}>
-        <View style={styles.buddiesHeader}>
-          <Text style={styles.buddiesTitle}>Training Buddies</Text>
-          <TouchableOpacity style={styles.addBuddyButton}>
-            <MaterialIcons name="person-add" size={20} color="#007AFF" />
-            <Text style={styles.addBuddyText}>Add Buddy</Text>
-          </TouchableOpacity>
-        </View>
-        
-        {TRAINING_BUDDIES.map(renderBuddyCard)}
-      </View>
-
-      {renderLeaderboard()}
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      {renderHeader()}
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {renderTeamHub()}
+        {renderTeamSchedule()}
+        {renderTeamBuddies()}
+        {renderActiveChallenges()}
+        {renderTeamInsights()}
+        {renderLeaderboard()}
+        {renderTeamFeed()}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
-    paddingBottom: 24, // Add padding at the bottom of the screen
+    backgroundColor: '#F8FAFC',
   },
-  challengeCard: {
-    backgroundColor: '#8B5CF6',
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    padding: 16,
+    backgroundColor: colors.white,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  headerSubtitle: {
+    fontSize: 24,
+    fontWeight: '400',
+    color: colors.text,
+  },
+  gradientCard: {
     margin: 16,
-    marginTop: 24,
-    marginBottom: 24,
-    padding: 20,
     borderRadius: 20,
+    overflow: 'hidden',
   },
-  challengeHeader: {
+  gradient: {
+    padding: 24,
+  },
+  gradientTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FFF',
+    marginBottom: 8,
+  },
+  gradientSubtitle: {
+    fontSize: 16,
+    color: '#FFF',
+    opacity: 0.9,
+    marginBottom: 24,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statItem: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    minWidth: '30%',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FFF',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#FFF',
+    opacity: 0.9,
+  },
+  viewDetailsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    padding: 12,
+    alignSelf: 'flex-start',
+  },
+  viewDetailsText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '500',
+    marginRight: 4,
+  },
+  section: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    padding: 20,
+    margin: 16,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 4,
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: colors.text,
+  },
+  scheduleItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  trophyContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  scheduleStatus: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.safe,
+    marginRight: 12,
+  },
+  scheduleIconContainer: {
+    width: 40,
+    height: 40,
     borderRadius: 12,
-    padding: 8,
-  },
-  challengeInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  challengeTitle: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  challengeName: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  streakBadge: {
-    backgroundColor: '#FF4B4B',
-    flexDirection: 'row',
+    backgroundColor: '#EBF5FF',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    marginRight: 12,
   },
-  streakText: {
-    color: '#fff',
-    marginLeft: 4,
-    fontWeight: '600',
+  scheduleContent: {
+    flex: 1,
   },
-  challengeDescription: {
-    color: '#fff',
+  scheduleTitle: {
     fontSize: 16,
-    marginBottom: 20,
-  },
-  progressSection: {
-    marginBottom: 20,
-  },
-  progressLabel: {
-    color: '#fff',
-    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
     marginBottom: 4,
   },
-  sessionCount: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  scheduleDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  scheduleText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginRight: 8,
+  },
+  viewMoreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    gap: 4,
+  },
+  viewMoreText: {
+    fontSize: 14,
+    color: colors.primary,
+    fontWeight: '500',
+  },
+  buddiesContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  buddyCard: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+  },
+  buddyHeader: {
+    position: 'relative',
     marginBottom: 8,
   },
-  progressBar: {
+  buddyAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#EBF5FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buddyInitials: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: colors.primary,
+  },
+  onlineIndicator: {
+    position: 'absolute',
+    right: -2,
+    top: -2,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: colors.safe,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  buddyName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF8A00',
+    borderRadius: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginBottom: 12,
+    gap: 4,
+  },
+  streakText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FFF',
+  },
+  chatButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  chatButtonText: {
+    fontSize: 14,
+    color: colors.text,
+  },
+  challengeCard: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 12,
+  },
+  challengeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  challengeTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFF',
+  },
+  challengeStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 16,
+  },
+  challengeStatsText: {
+    fontSize: 14,
+    color: '#FFF',
+  },
+  challengeBullet: {
+    fontSize: 14,
+    color: '#FFF',
+    marginHorizontal: 4,
+  },
+  progressSection: {
+    marginBottom: 16,
+  },
+  progressLabel: {
+    fontSize: 14,
+    color: '#FFF',
+    marginBottom: 8,
+  },
+  progressContainer: {
     height: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 4,
+    marginBottom: 4,
   },
-  progressFill: {
+  progressBar: {
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     borderRadius: 4,
+  },
+  progressPercentage: {
+    fontSize: 14,
+    color: '#FFF',
+    textAlign: 'right',
   },
   challengeFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  participantsInfo: {
+  topPerformer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
-  participantsText: {
-    color: '#fff',
-    marginLeft: 8,
-  },
-  daysLeft: {
-    color: '#fff',
-  },
-  buddiesSection: {
-    marginTop: 24,
-    marginBottom: 32,
-  },
-  buddiesHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  buddiesTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  addBuddyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  addBuddyText: {
-    color: '#007AFF',
-    marginLeft: 4,
-    fontWeight: '600',
-  },
-  buddyCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    paddingBottom: 32, // Increased to accommodate the message button
-    borderRadius: 12,
-    position: 'relative', // Ensure relative positioning for absolute children
-  },
-  buddyHeader: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  buddyAvatarSection: {
-    position: 'relative',
-  },
-  avatarCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#E3F2FD',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2196F3',
-  },
-  statusDot: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
-  buddyInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  buddyName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  sportText: {
-    color: '#666',
-    marginTop: 2,
-  },
-  riskScoreContainer: {
-    alignItems: 'flex-end',
-  },
-  riskScoreLabel: {
-    fontSize: 12,
-    color: '#666',
-  },
-  riskScoreValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  goalSection: {
-    marginBottom: 24,
-  },
-  goalLabel: {
+  topPerformerText: {
     fontSize: 14,
-    color: '#666',
+    color: '#FFF',
+  },
+  viewButton: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  viewButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#000',
+  },
+  insightTabs: {
+    flexDirection: 'row',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 20,
+    padding: 2,
+  },
+  activeTab: {
+    backgroundColor: '#000',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  activeTabText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  inactiveTab: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  inactiveTabText: {
+    color: colors.text,
+    fontSize: 14,
+  },
+  insightsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  insightCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#F8FAFC',
+  },
+  insightLabel: {
+    fontSize: 14,
+    color: colors.text,
     marginBottom: 4,
   },
-  goalProgress: {
-    fontSize: 14,
+  insightValue: {
+    fontSize: 24,
     fontWeight: '600',
-    marginBottom: 8,
+    color: colors.safe,
   },
-  goalBar: {
-    height: 4,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 2,
+  trendPositive: {
+    color: colors.primary,
   },
-  goalFill: {
-    height: '100%',
-    backgroundColor: '#2196F3',
-    borderRadius: 2,
-  },
-  messageButton: {
-    position: 'absolute',
-    bottom: 8,
-    right: 16,
-    backgroundColor: '#007AFF',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    zIndex: 1, // Ensure button stays on top
-  },
-  leaderboardSection: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 32,
+  insightMessage: {
+    backgroundColor: '#EBF5FF',
     borderRadius: 12,
     padding: 16,
   },
-  leaderboardHeader: {
+  messageText: {
+    fontSize: 14,
+    color: colors.text,
+    lineHeight: 20,
+  },
+  highlightText: {
+    color: colors.primary,
+    fontWeight: '500',
+  },
+  leaderboardItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-  },
-  leaderboardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 8,
-    flex: 1,
-  },
-  leaderboardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 8,
+    padding: 12,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
     marginBottom: 8,
   },
-  rankSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 80,
-  },
-  rankNumber: {
-    width: 24,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  playerAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#E3F2FD',
+  rankContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#E2E8F0',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 12,
+  },
+  rankFirst: {
+    backgroundColor: '#FFB800',
+  },
+  rankText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  rankFirstText: {
+    color: '#FFF',
+  },
+  playerAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#EBF5FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   playerInitials: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2196F3',
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.primary,
   },
   playerInfo: {
     flex: 1,
-    marginLeft: 12,
   },
   playerName: {
     fontSize: 16,
     fontWeight: '500',
+    color: colors.text,
   },
   playerPoints: {
     fontSize: 14,
-    color: '#666',
+    color: colors.textSecondary,
   },
-  changeIndicator: {
+  playerChange: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
+  },
+  changePositive: {
+    color: colors.safe,
+  },
+  changeNegative: {
+    color: colors.danger,
+  },
+  changeNeutral: {
+    color: colors.textSecondary,
   },
   leaderboardUpdate: {
+    fontSize: 14,
+    color: colors.textSecondary,
     textAlign: 'center',
-    color: '#666',
-    fontSize: 12,
     marginTop: 8,
-    marginBottom: 16,
   },
-  inviteSection: {
-    backgroundColor: '#F0F7FF',
-    borderRadius: 12,
-    padding: 16,
+  feedFilters: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  activeFilter: {
+    backgroundColor: colors.primary,
+  },
+  activeFilterText: {
+    color: '#FFF',
+  },
+  feedItems: {
+    gap: 16,
+  },
+  feedItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  inviteContent: {
-    flexDirection: 'row',
+  feedAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EBF5FF',
+    justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
+    marginRight: 12,
   },
-  inviteTextContainer: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  inviteTitle: {
+  feedInitials: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
+    color: colors.primary,
+  },
+  feedContent: {
+    flex: 1,
+  },
+  feedText: {
+    fontSize: 14,
+    color: colors.text,
     marginBottom: 4,
   },
-  inviteDescription: {
+  feedName: {
+    color: colors.primary,
+    fontWeight: '500',
+  },
+  feedTime: {
     fontSize: 12,
-    color: '#666',
+    color: colors.textSecondary,
   },
-  inviteButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
+  postUpdateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 8,
   },
-  inviteButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+  postUpdateText: {
+    fontSize: 14,
+    color: colors.textSecondary,
   },
 });
 
