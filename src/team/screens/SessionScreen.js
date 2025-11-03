@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,22 +11,14 @@ import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
 
 const SessionScreen = ({ navigation }) => {
-  // Weekly progress data
-  const riskyEvents = 7;
-  const previousRiskyEvents = 10;
-  const safeMovementRate = 92;
-  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const riskLevels = [75, 85, 95, 60, 70, 55, 45]; // Example risk levels for each day
+  const [isConnected, setIsConnected] = useState(false);
 
-  // Sensor data
-  const sensorData = {
-    name: 'Strider-003',
-    lastSync: 'Just now',
-    batteryLevel: 87,
-    signalStrength: 5,
-    placement: 'Right Knee',
-    status: 'Optimal position detected',
-  };
+  // Weekly progress data
+  const riskyEvents = 18;
+  const previousRiskyEvents = 24;
+  const safeMovementRate = 88;
+  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const riskLevels = [75, 85, 95, 60, 70, 55, 45];
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -46,7 +38,7 @@ const SessionScreen = ({ navigation }) => {
   const renderWeeklyProgress = () => (
     <TouchableOpacity style={styles.card} onPress={() => {}}>
       <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Weekly Progress</Text>
+        <Text style={styles.cardTitle}>Weekly Progress & Safe Movement Rate</Text>
         <Ionicons name="chevron-forward" size={24} color={colors.textSecondary} />
       </View>
       
@@ -54,7 +46,7 @@ const SessionScreen = ({ navigation }) => {
         <View style={styles.progressHeader}>
           <Text style={styles.progressTitle}>Risky events this week</Text>
           <Text style={styles.progressImprovement}>
-            <Ionicons name="trending-down" size={16} color={colors.safe} /> 30% improvement
+            <Ionicons name="trending-down" size={16} color={colors.safe} /> 25% improvement
           </Text>
         </View>
         <Text style={styles.riskCount}>
@@ -84,10 +76,11 @@ const SessionScreen = ({ navigation }) => {
   const renderActionButtons = () => (
     <View style={styles.actionButtons}>
       <TouchableOpacity 
-        style={styles.actionButton}
-        onPress={() => navigation.navigate('LiveSession')}
+        style={[styles.actionButton, !isConnected && styles.disabledButton]}
+        onPress={() => isConnected && navigation.navigate('LiveSession')}
+        disabled={!isConnected}
       >
-        <Text style={styles.actionButtonText}>Use Sensor</Text>
+        <Text style={styles.actionButtonText}>Use Personal Sensor</Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.actionButton, styles.secondaryButton]}
@@ -98,13 +91,15 @@ const SessionScreen = ({ navigation }) => {
     </View>
   );
 
-  const renderSensorStatus = () => (
+  const renderTeamSensorHub = () => (
     <View style={styles.card}>
       <View style={styles.sensorHeader}>
-        <Text style={styles.cardTitle}>MOveQL Sensor Status</Text>
+        <Text style={styles.cardTitle}>Team Sensor Hub</Text>
         <View style={styles.connectionStatus}>
-          <Ionicons name="wifi" size={16} color={colors.safe} />
-          <Text style={[styles.statusText, { color: colors.safe }]}>Connected</Text>
+          <Ionicons name="wifi" size={16} color={isConnected ? colors.safe : colors.danger} />
+          <Text style={[styles.statusText, { color: isConnected ? colors.safe : colors.danger }]}>
+            {isConnected ? 'Connected' : 'Disconnected'}
+          </Text>
         </View>
       </View>
 
@@ -113,18 +108,18 @@ const SessionScreen = ({ navigation }) => {
           <Ionicons name="pulse" size={24} color={colors.primary} />
         </View>
         <View style={styles.sensorDetails}>
-          <Text style={styles.sensorName}>{sensorData.name}</Text>
-          <Text style={styles.sensorSync}>Last sync: {sensorData.lastSync}</Text>
+          <Text style={styles.sensorName}>Team Sensor - Field Unit 01</Text>
+          <Text style={styles.sensorSync}>Last sync: 5 min ago</Text>
         </View>
         <View style={styles.sensorStats}>
-          <Text style={styles.batteryLevel}>{sensorData.batteryLevel}%</Text>
+          <Text style={styles.batteryLevel}>87%</Text>
           <View style={styles.signalStrength}>
             {[...Array(5)].map((_, i) => (
               <View
                 key={i}
                 style={[
                   styles.signalBar,
-                  { opacity: i < sensorData.signalStrength ? 1 : 0.3 }
+                  { opacity: i < (isConnected ? 5 : 2) ? 1 : 0.3 }
                 ]}
               />
             ))}
@@ -132,13 +127,13 @@ const SessionScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={styles.placementCard}>
-        <View style={styles.placementHeader}>
-          <Ionicons name="checkmark-circle" size={20} color={colors.safe} />
-          <Text style={styles.placementTitle}>Placement: {sensorData.placement}</Text>
-          <Ionicons name="location" size={20} color={colors.primary} />
-        </View>
-        <Text style={styles.placementStatus}>{sensorData.status}</Text>
+      <View style={[styles.placementCard, !isConnected && styles.placementCardDisconnected]}>
+        <Text style={styles.managedByText}>Managed by your Sports Medicine Team</Text>
+        {!isConnected && (
+          <Text style={styles.offlineMessage}>
+            Sensor is currently offline. Contact your sports medicine team to reconnect.
+          </Text>
+        )}
       </View>
     </View>
   );
@@ -149,11 +144,19 @@ const SessionScreen = ({ navigation }) => {
         <View style={styles.playButton}>
           <Ionicons name="play" size={32} color={colors.primary} />
         </View>
-        <Text style={styles.startSessionTitle}>Ready to Start</Text>
-        <Text style={styles.startSessionDescription}>
-          Begin a movement safety session using your MOveQL sensor and real-time analysis
+        <Text style={styles.startSessionTitle}>
+          {isConnected ? 'Start Team Session' : 'Waiting for Connection'}
         </Text>
-        <TouchableOpacity style={styles.startButton}>
+        <Text style={styles.startSessionDescription}>
+          {isConnected 
+            ? 'Begin a real-time movement safety session using the active field sensor and video analysis'
+            : 'Sensor connection required to start session'}
+        </Text>
+        <TouchableOpacity 
+          style={[styles.startButton, !isConnected && styles.disabledButton]}
+          disabled={!isConnected}
+          onPress={() => isConnected && navigation.navigate('LiveSession')}
+        >
           <Ionicons name="play" size={20} color={colors.white} />
           <Text style={styles.startButtonText}>Start Session</Text>
         </TouchableOpacity>
@@ -170,15 +173,22 @@ const SessionScreen = ({ navigation }) => {
           <Text style={styles.quickActionText}>Technique Video</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickAction}>
-          <Ionicons name="location" size={24} color={colors.primary} />
-          <Text style={styles.quickActionText}>Move Sensor</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.quickAction, styles.fullWidthAction]}>
-          <Ionicons name="person-add" size={24} color={colors.primary} />
-          <Text style={styles.quickActionText}>Contact Coach/Therapist</Text>
+          <Ionicons name="people" size={24} color={colors.primary} />
+          <Text style={styles.quickActionText}>Connect with Coach</Text>
         </TouchableOpacity>
       </View>
     </View>
+  );
+
+  const renderDevToggle = () => (
+    <TouchableOpacity 
+      style={styles.devToggle} 
+      onPress={() => setIsConnected(!isConnected)}
+    >
+      <Text style={styles.devToggleText}>
+        Dev: Toggle Connection ({isConnected ? 'connected' : 'disconnected'})
+      </Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -187,10 +197,11 @@ const SessionScreen = ({ navigation }) => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {renderWeeklyProgress()}
         {renderActionButtons()}
-        {renderSensorStatus()}
+        {renderTeamSensorHub()}
         {renderStartSession()}
         {renderQuickActions()}
       </ScrollView>
+      {renderDevToggle()}
     </SafeAreaView>
   );
 };
@@ -349,6 +360,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  disabledButton: {
+    opacity: 0.5,
+  },
   sensorHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -415,22 +429,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
   },
-  placementHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  placementCardDisconnected: {
+    backgroundColor: '#FFF7ED',
+  },
+  managedByText: {
+    fontSize: 14,
+    color: colors.text,
     marginBottom: 4,
   },
-  placementTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.text,
-  },
-  placementStatus: {
+  offlineMessage: {
     fontSize: 14,
-    color: colors.textSecondary,
-    marginLeft: 28,
+    color: colors.danger,
   },
   startSessionCard: {
     backgroundColor: '#F0F7FF',
@@ -489,14 +498,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  fullWidthAction: {
-    minWidth: '100%',
-  },
   quickActionText: {
     fontSize: 14,
     fontWeight: '500',
     color: colors.text,
     textAlign: 'center',
+  },
+  devToggle: {
+    backgroundColor: '#1E293B',
+    padding: 12,
+    alignItems: 'center',
+  },
+  devToggleText: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 
