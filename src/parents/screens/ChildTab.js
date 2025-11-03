@@ -7,159 +7,274 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
-import { childProfile, riskScore, progressMetrics } from '../data/childData';
-import { sessionHistory } from '../../user/data/sessionsData';
 
 const ChildTab = () => {
-  // Dummy plan data
-  const exercisePlan = {
-    id: 1,
-    assignedBy: 'Dr. Sarah Mitchell',
-    assignedDate: '2024-01-10',
-    lastUpdated: '2024-01-15',
-    updatedBy: 'Lisa Chen, PT',
-    exercises: [
-      { id: 1, name: 'Shoulder Rolls', sets: '3 sets x 10 reps', frequency: 'Daily' },
-      { id: 2, name: 'Neck Stretches', sets: '2 sets x 15 reps', frequency: 'Daily' },
-      { id: 3, name: 'Back Strengthening', sets: '3 sets x 12 reps', frequency: '3x/week' },
-      { id: 4, name: 'Core Exercises', sets: '2 sets x 10 reps', frequency: '3x/week' },
-    ],
+  const childProfile = {
+    initials: 'EJ',
+    name: 'Emma Johnson',
+    sport: 'Soccer',
+    position: 'Midfielder',
+    team: 'Valley United U14',
+    recoveryPhase: 'Improving',
   };
 
-  // Check-in data
-  const checkIns = [
-    { date: '2024-01-15', mood: 'Good', painLevel: 4, notes: 'Feeling better today' },
-    { date: '2024-01-14', mood: 'Excellent', painLevel: 3, notes: 'Great day' },
-    { date: '2024-01-13', mood: 'Fair', painLevel: 5, notes: 'A bit sore' },
-    { date: '2024-01-12', mood: 'Good', painLevel: 3, notes: null },
+  const exercisePlan = [
+    { 
+      id: 1, 
+      name: 'Shoulder Rolls',
+      reps: '3x10 reps',
+      frequency: 'daily',
+      icon: 'pulse'
+    },
+    { 
+      id: 2, 
+      name: 'Neck Stretches',
+      reps: '2x15 reps',
+      frequency: 'daily',
+      icon: 'pulse'
+    },
+    { 
+      id: 3, 
+      name: 'Hamstring Stretches',
+      reps: '3x30 seconds',
+      frequency: '3x per week',
+      icon: 'radio-button-on'
+    },
+    { 
+      id: 4, 
+      name: 'Core Strengthening',
+      reps: '2x20 reps',
+      frequency: 'daily',
+      icon: 'fitness'
+    }
   ];
+
+  const sessions = [
+    {
+      id: 1,
+      type: 'Physical Therapy',
+      date: '2024-01-14',
+      duration: '25 min',
+      notes: 'Focused on knee mobility and strength exercises.',
+      tags: ['Quad Sets', 'Wall Sits'],
+      icon: 'fitness'
+    },
+    {
+      id: 2,
+      type: 'Exercise Session',
+      date: '2024-01-13',
+      duration: '20 min',
+      notes: 'Completed morning routine. No pain reported.',
+      tags: ['Core work', 'Stretching'],
+      icon: 'pulse'
+    },
+    {
+      id: 3,
+      type: 'Physical Therapy',
+      date: '2024-01-12',
+      duration: '30 min',
+      notes: 'Assessment and adjustment of exercise plan.',
+      tags: ['Flexibility assessment', 'New exercises'],
+      icon: 'fitness'
+    }
+  ];
+
+  const reflections = [
+    {
+      id: 1,
+      date: '2024-01-14',
+      pain: 3,
+      status: 'Improving',
+      notes: 'Feeling good, knee less stiff.',
+      mood: 'happy'
+    },
+    {
+      id: 2,
+      date: '2024-01-13',
+      pain: 4,
+      status: 'Stable',
+      notes: "Some soreness after yesterday's PT session.",
+      mood: 'neutral'
+    },
+    {
+      id: 3,
+      date: '2024-01-12',
+      pain: 3,
+      status: 'Improving',
+      notes: 'Good energy, completed all exercises.',
+      mood: 'happy'
+    }
+  ];
+
+  const renderMoodEmoji = (mood) => {
+    switch (mood) {
+      case 'happy': return '😊';
+      case 'neutral': return '😐';
+      case 'sad': return '😟';
+      default: return '😊';
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Profile & Metrics */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Profile & Metrics</Text>
-          <View style={styles.profileRow}>
-            <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{childProfile.name}</Text>
-              <Text style={styles.profileDetails}>Age: {childProfile.age} • {childProfile.gender}</Text>
-              <Text style={styles.profileDetails}>Sport: Basketball • Position: Point Guard</Text>
-              <Text style={styles.profileDetails}>Team: Junior Wildcats</Text>
-            </View>
+        {/* Profile Header */}
+        <View style={styles.profileHeader}>
+          <View style={styles.avatarContainer}>
+            <Text style={styles.avatarText}>{childProfile.initials}</Text>
           </View>
-          
-          <View style={styles.metricsContainer}>
-            <Text style={styles.sectionSubtitle}>Risk Trends Over Time</Text>
-            <View style={styles.riskHistory}>
-              {riskScore.history.slice(0, 5).map((entry, index) => (
-                <View key={index} style={styles.riskHistoryItem}>
-                  <Text style={styles.riskHistoryDate}>{new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</Text>
-                  <View style={[styles.riskHistoryBar, { height: entry.score * 8 }]} />
-                  <Text style={styles.riskHistoryScore}>{entry.score}</Text>
-                </View>
-              ))}
+          <View style={styles.profileInfo}>
+            <Text style={styles.name}>{childProfile.name}</Text>
+            <Text style={styles.details}>
+              {childProfile.sport} • {childProfile.position} • {childProfile.team}
+            </Text>
+            <View style={styles.recoveryBadge}>
+              <View style={styles.recoveryDot} />
+              <Text style={styles.recoveryText}>
+                Recovery Phase: {childProfile.recoveryPhase}
+              </Text>
             </View>
           </View>
         </View>
 
-        {/* Plan Viewer (READ-ONLY) */}
-        <View style={styles.card}>
-          <View style={styles.planHeader}>
-            <Text style={styles.cardTitle}>Exercise Plan (Read-Only)</Text>
-            <View style={styles.readOnlyBadge}>
-              <Text style={styles.readOnlyText}>VIEW ONLY</Text>
+        {/* Info Cards */}
+        <View style={styles.infoCards}>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoLabel}>Age</Text>
+            <Text style={styles.infoValue}>14 yrs</Text>
+          </View>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoLabel}>Gender</Text>
+            <Text style={styles.infoValue}>Female</Text>
+          </View>
+          <View style={styles.infoCard}>
+            <Text style={styles.infoLabel}>Risk Trend</Text>
+            <View style={styles.trendContainer}>
+              <Text style={styles.infoValue}>Stable</Text>
+              <Ionicons name="trending-down" size={16} color="#10B981" />
             </View>
           </View>
-          <View style={styles.planInfo}>
-            <Text style={styles.planInfoText}>
-              Assigned by: <Text style={styles.planInfoBold}>{exercisePlan.assignedBy}</Text>
-            </Text>
-            <Text style={styles.planInfoText}>
-              Assigned on: {new Date(exercisePlan.assignedDate).toLocaleDateString()}
-            </Text>
-            <Text style={styles.planInfoText}>
-              Last updated: {new Date(exercisePlan.lastUpdated).toLocaleDateString()} by {exercisePlan.updatedBy}
+        </View>
+
+        {/* Risk Trends Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Risk Trends Over Time</Text>
+          <Text style={styles.sectionSubtitle}>
+            Lower score = less pain. Great progress!
+          </Text>
+          <View style={styles.graphPlaceholder}>
+            {/* Add your graph component here */}
+          </View>
+          <View style={styles.riskLegend}>
+            <View style={styles.legendItem}>
+              <Text style={styles.legendEmoji}>🙂</Text>
+              <Text style={styles.legendText}>Low</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <Text style={styles.legendEmoji}>😐</Text>
+              <Text style={styles.legendText}>Medium</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <Text style={styles.legendEmoji}>😣</Text>
+              <Text style={styles.legendText}>High</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Exercise Plan */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Exercise Plan</Text>
+            <Text style={styles.readOnly}>Read-Only</Text>
+          </View>
+          <View style={styles.assignedBy}>
+            <Text style={styles.assignedText}>
+              Assigned by <Text style={styles.doctorName}>Dr. Sarah Mitchell, PT</Text>
             </Text>
           </View>
-          
-          <View style={styles.planDivider} />
-          
-          <Text style={styles.sectionSubtitle}>Exercises</Text>
-          {exercisePlan.exercises.map((exercise) => (
-            <View key={exercise.id} style={styles.planExerciseItem}>
-              <Text style={styles.planExerciseName}>{exercise.name}</Text>
-              <Text style={styles.planExerciseDetails}>
-                {exercise.sets} • {exercise.frequency}
-              </Text>
+          {exercisePlan.map(exercise => (
+            <View key={exercise.id} style={styles.exerciseItem}>
+              <View style={styles.exerciseIcon}>
+                <Ionicons name={exercise.icon} size={24} color="#8B5CF6" />
+              </View>
+              <View style={styles.exerciseContent}>
+                <Text style={styles.exerciseName}>{exercise.name}</Text>
+                <Text style={styles.exerciseReps}>{exercise.reps}</Text>
+              </View>
+              <View style={styles.frequencyBadge}>
+                <Text style={styles.frequencyText}>{exercise.frequency}</Text>
+              </View>
             </View>
           ))}
         </View>
 
-        {/* Session History */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Session History</Text>
-          <Text style={styles.sectionSubtitle}>Team Practice + Personal Workouts</Text>
-          
-          {sessionHistory.map((session) => (
+        {/* Sessions */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Child Progress - Sessions</Text>
+          {sessions.map(session => (
             <View key={session.id} style={styles.sessionItem}>
-              <View style={styles.sessionHeader}>
+              <View style={styles.sessionDot} />
+              <View style={styles.sessionIcon}>
+                <Ionicons name={session.icon} size={24} color="#8B5CF6" />
+              </View>
+              <View style={styles.sessionContent}>
+                <View style={styles.sessionHeader}>
+                  <Text style={styles.sessionType}>{session.type}</Text>
+                  <Text style={styles.sessionDuration}>{session.duration}</Text>
+                </View>
                 <Text style={styles.sessionDate}>{session.date}</Text>
-                <View style={[styles.riskBadge, { backgroundColor: session.type === 'Physical Therapy' ? colors.secondary : colors.primary }]}>
-                  <Text style={styles.riskBadgeText}>{session.type}</Text>
+                <Text style={styles.sessionNotes}>{session.notes}</Text>
+                <View style={styles.tagContainer}>
+                  <Text style={styles.tagLabel}>Tags:</Text>
+                  {session.tags.map((tag, index) => (
+                    <View key={index} style={styles.tag}>
+                      <Text style={styles.tagText}>{tag}</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
-              <View style={styles.sessionDetails}>
-                <Text style={styles.sessionDuration}>Duration: {session.duration}</Text>
-                {session.notes && (
-                  <View style={styles.coachNotesContainer}>
-                    <Text style={styles.coachNotesLabel}>Coach Notes:</Text>
-                    <Text style={styles.coachNotes}>{session.notes}</Text>
-                  </View>
-                )}
-              </View>
-              <Text style={styles.sessionExercises}>
-                Exercises: {session.exercises.join(', ')}
-              </Text>
             </View>
           ))}
         </View>
 
-        {/* Check-ins */}
-        <View style={styles.card}>
-          <View style={styles.checkinHeader}>
-            <Text style={styles.cardTitle}>Daily Check-ins</Text>
+        {/* Recovery Reflections */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Emma's Recovery Reflections</Text>
             <TouchableOpacity style={styles.remindButton}>
-              <Text style={styles.remindButtonText}>💬 Remind to Check-in</Text>
+              <Text style={styles.remindText}>Remind</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.sectionSubtitle}>Mood and Pain Reports</Text>
-          
-          {checkIns.map((checkin, index) => (
-            <View key={index} style={styles.checkinItem}>
-              <View style={styles.checkinHeaderRow}>
-                <Text style={styles.checkinDate}>{new Date(checkin.date).toLocaleDateString()}</Text>
-                <View style={styles.checkinIndicators}>
-                  <View style={styles.moodIndicator}>
-                    <Text style={styles.moodIcon}>😊</Text>
-                    <Text style={styles.moodText}>{checkin.mood}</Text>
+          <Text style={styles.reflectionSubtitle}>Daily wellness tracking</Text>
+          {reflections.map(reflection => (
+            <View key={reflection.id} style={styles.reflectionItem}>
+              <View style={[styles.reflectionContent, 
+                { backgroundColor: reflection.status === 'Improving' ? '#ECFDF5' : '#FFFBEB' }]}>
+                <View style={styles.reflectionHeader}>
+                  <View style={styles.painContainer}>
+                    <Text style={styles.moodEmoji}>
+                      {renderMoodEmoji(reflection.mood)}
+                    </Text>
+                    <Text style={styles.painScore}>Pain: {reflection.pain}/10</Text>
                   </View>
-                  <View style={styles.painIndicator}>
-                    <Text style={styles.painLabel}>Pain:</Text>
-                    <Text style={styles.painLevel}>{checkin.painLevel}/10</Text>
+                  <View style={[styles.statusBadge, 
+                    { backgroundColor: reflection.status === 'Improving' ? '#D1FAE5' : '#FEF3C7' }]}>
+                    <Text style={[styles.statusText, 
+                      { color: reflection.status === 'Improving' ? '#059669' : '#D97706' }]}>
+                      {reflection.status}
+                    </Text>
+                    {reflection.status === 'Improving' && (
+                      <Ionicons name="trending-up" size={16} color="#059669" />
+                    )}
                   </View>
                 </View>
+                <Text style={styles.reflectionNotes}>{reflection.notes}</Text>
+                <Text style={styles.reflectionDate}>{reflection.date}</Text>
               </View>
-              {checkin.notes && (
-                <Text style={styles.checkinNotes}>{checkin.notes}</Text>
-              )}
             </View>
           ))}
-          
-          <TouchableOpacity style={styles.viewAllButton}>
-            <Text style={styles.viewAllText}>View All Check-ins →</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -169,273 +284,335 @@ const ChildTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F4F6',
   },
   scrollView: {
     flex: 1,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
     padding: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  cardTitle: {
-    fontSize: 18,
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  avatarContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#8B5CF6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  avatarText: {
+    color: 'white',
+    fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 12,
-  },
-  profileRow: {
-    marginBottom: 16,
   },
   profileInfo: {
-    marginBottom: 12,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  profileDetails: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  metricsContainer: {
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 12,
-  },
-  riskHistory: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
-    height: 120,
-    marginTop: 12,
-  },
-  riskHistoryItem: {
-    alignItems: 'center',
     flex: 1,
   },
-  riskHistoryDate: {
-    fontSize: 10,
-    color: colors.textSecondary,
-    marginBottom: 8,
-  },
-  riskHistoryBar: {
-    width: 30,
-    backgroundColor: colors.secondary,
-    borderRadius: 4,
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
     marginBottom: 4,
   },
-  riskHistoryScore: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.text,
+  details: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 8,
   },
-  planHeader: {
+  recoveryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  recoveryDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+    marginRight: 6,
+  },
+  recoveryText: {
+    fontSize: 14,
+    color: '#059669',
+  },
+  infoCards: {
+    flexDirection: 'row',
+    marginBottom: 24,
+    gap: 12,
+  },
+  infoCard: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 12,
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  infoValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  trendContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  section: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 24,
+  },
+  sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-  readOnlyBadge: {
-    backgroundColor: colors.border,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  readOnlyText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-  planInfo: {
-    backgroundColor: colors.background,
-    padding: 12,
-    borderRadius: 8,
     marginBottom: 16,
   },
-  planInfoText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  planInfoBold: {
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: '600',
-    color: colors.text,
+    color: '#111827',
   },
-  planDivider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: 16,
-  },
-  planExerciseItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  planExerciseName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  planExerciseDetails: {
+  sectionSubtitle: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  readOnly: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  assignedBy: {
+    backgroundColor: '#F5F3FF',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  assignedText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  doctorName: {
+    color: '#8B5CF6',
+    fontWeight: '500',
+  },
+  exerciseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+  exerciseIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F5F3FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  exerciseContent: {
+    flex: 1,
+  },
+  exerciseName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  exerciseReps: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  frequencyBadge: {
+    backgroundColor: '#F5F3FF',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  frequencyText: {
+    fontSize: 12,
+    color: '#8B5CF6',
   },
   sessionItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    flexDirection: 'row',
+    marginBottom: 24,
+    position: 'relative',
+  },
+  sessionDot: {
+    position: 'absolute',
+    left: -4,
+    top: 28,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#8B5CF6',
+  },
+  sessionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F5F3FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  sessionContent: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    padding: 12,
   },
   sessionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  sessionDate: {
+  sessionType: {
     fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  riskBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  riskBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: colors.white,
-  },
-  sessionDetails: {
-    marginBottom: 8,
+    fontWeight: '500',
+    color: '#111827',
   },
   sessionDuration: {
     fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 4,
+    color: '#6B7280',
+    backgroundColor: '#F3F4F6',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 12,
   },
-  coachNotesContainer: {
-    backgroundColor: colors.background,
-    padding: 10,
-    borderRadius: 8,
-    marginTop: 8,
+  sessionDate: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 8,
   },
-  coachNotesLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  coachNotes: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
-  sessionExercises: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    fontStyle: 'italic',
-  },
-  checkinHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  sessionNotes: {
+    fontSize: 14,
+    color: '#374151',
     marginBottom: 12,
   },
-  remindButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: colors.secondary,
-    borderRadius: 8,
+  tagContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
   },
-  remindButtonText: {
+  tagLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  tag: {
+    backgroundColor: '#F5F3FF',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  tagText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: colors.white,
+    color: '#8B5CF6',
   },
-  checkinItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  remindButton: {
+    backgroundColor: '#8B5CF6',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 12,
   },
-  checkinHeaderRow: {
+  remindText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  reflectionSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  reflectionItem: {
+    marginBottom: 12,
+  },
+  reflectionContent: {
+    borderRadius: 12,
+    padding: 16,
+  },
+  reflectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
   },
-  checkinDate: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  checkinIndicators: {
+  painContainer: {
     flexDirection: 'row',
-    gap: 16,
+    alignItems: 'center',
+    gap: 8,
   },
-  moodIndicator: {
+  moodEmoji: {
+    fontSize: 20,
+  },
+  painScore: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  reflectionNotes: {
+    fontSize: 14,
+    color: '#374151',
+    marginBottom: 8,
+  },
+  reflectionDate: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  riskLegend: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 16,
+  },
+  legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  moodIcon: {
+  legendEmoji: {
     fontSize: 16,
   },
-  moodText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
-  painIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  painLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
-  painLevel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.error,
-  },
-  checkinNotes: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    fontStyle: 'italic',
-    marginTop: 4,
-  },
-  viewAllButton: {
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  viewAllText: {
+  legendText: {
     fontSize: 14,
-    color: colors.secondary,
-    fontWeight: '600',
+    color: '#6B7280',
+  },
+  graphPlaceholder: {
+    height: 200,
+    backgroundColor: '#F5F3FF',
+    borderRadius: 12,
+    marginVertical: 16,
   },
 });
 
 export default ChildTab;
-
