@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -6,226 +6,215 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  Modal,
+  Image,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
-import { messageThreads, messageHistory, quickContacts } from '../data/messagesData';
 
 const MessagesTab = () => {
-  const [selectedThread, setSelectedThread] = useState(null);
-  const [replyText, setReplyText] = useState('');
-  const [showReply, setShowReply] = useState(false);
-
-  // System messages
-  const systemMessages = [
+  const messages = [
     {
       id: 1,
-      type: 'plan_update',
-      title: 'Plan Updated',
-      message: 'Your child\'s exercise plan was updated by Lisa Chen, PT',
-      timestamp: '2024-01-15T10:00:00',
-      read: false,
+      sender: {
+        initials: 'SM',
+        name: 'Dr. Sarah Mitchell',
+        role: 'Primary Physician',
+        avatar: 'SM',
+        color: '#8B5CF6',
+      },
+      message: "Emma's latest blood work results are in and everything looks normal. Continue with the current treatment plan.",
+      time: '2 hours ago',
+      isNew: true,
+      isReadOnly: true,
     },
     {
       id: 2,
-      type: 'appointment',
-      title: 'Appointment Reminder',
-      message: 'Follow-up appointment scheduled for January 22nd at 2:00 PM',
-      timestamp: '2024-01-13T09:00:00',
-      read: true,
+      sender: {
+        initials: 'LC',
+        name: 'Lisa Chen, PT',
+        role: 'Physical Therapist',
+        avatar: 'LC',
+        color: '#8B5CF6',
+      },
+      message: "Great progress in today's session! I've updated Emma's exercise plan with some new strengthening exercises.",
+      time: '5 hours ago',
+      isNew: true,
+      canReply: true,
     },
     {
       id: 3,
-      type: 'emergency',
-      title: 'Risk Alert',
-      message: 'Your child\'s risk score increased. Please review.',
-      timestamp: '2024-01-12T14:30:00',
-      read: true,
+      sender: {
+        initials: 'CC',
+        name: 'Care Coordinator Team',
+        role: 'Care Coordination',
+        avatar: 'CC',
+        color: '#6B7280',
+      },
+      message: 'Reminder: Emma has an appointment with Dr. Mitchell next Tuesday at 2:00 PM.',
+      time: 'Yesterday',
+      canReply: true,
+    },
+    {
+      id: 4,
+      sender: {
+        initials: 'MT',
+        name: 'Dr. Michael Thompson',
+        role: 'Orthopedic Specialist',
+        avatar: 'MT',
+        color: '#6B7280',
+      },
+      message: "Follow-up regarding Emma's knee recovery. Schedule a check-up in 2 weeks.",
+      time: '2 days ago',
+      isReadOnly: true,
     },
   ];
 
-  const getThreadHistory = (threadId) => {
-    return messageHistory.find((h) => h.threadId === threadId)?.messages || [];
-  };
+  const alerts = [
+    {
+      id: 1,
+      icon: 'document-text',
+      title: 'Plan Updated',
+      description: "Lisa Chen updated Emma's exercise plan",
+      time: '3 hours ago',
+      color: '#E0F2FE',
+      iconColor: '#0EA5E9',
+    },
+    {
+      id: 2,
+      icon: 'calendar',
+      title: 'Appointment Reminder',
+      description: 'Dr. Mitchell appointment on Jan 16 at 2:00 PM',
+      time: '1 day ago',
+      color: '#F5F3FF',
+      iconColor: '#8B5CF6',
+    },
+    {
+      id: 3,
+      icon: 'warning',
+      title: 'Risk Alert',
+      description: "Emma's risk score increased to 6.5 (Moderate)",
+      time: '2 days ago',
+      color: '#FEF3C7',
+      iconColor: '#F59E0B',
+    },
+  ];
 
-  const canReply = (thread) => {
-    // Usually read-only, but can reply if coach/team allows
-    return thread.participantType === 'therapist' || thread.participantType === 'team';
-  };
-
-  const handleSendReply = () => {
-    // Placeholder for sending reply
-    console.log('Sending reply:', replyText);
-    setReplyText('');
-    setShowReply(false);
-  };
+  const quickContacts = [
+    {
+      id: 1,
+      initials: 'SM',
+      name: 'Dr. Sarah Mitchell',
+      role: 'Primary Physician',
+      color: '#8B5CF6',
+    },
+    {
+      id: 2,
+      initials: 'LC',
+      name: 'Lisa Chen, PT',
+      role: 'Physical Therapist',
+      color: '#8B5CF6',
+    },
+    {
+      id: 3,
+      initials: '911',
+      name: 'Emergency Line',
+      role: 'Emergency Contact',
+      color: '#EF4444',
+    },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Coach/Provider Threads */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Coach/Provider Messages</Text>
-          <Text style={styles.sectionSubtitle}>Conversations with your child's healthcare team</Text>
-          
-          {messageThreads.map((thread) => {
-            const history = getThreadHistory(thread.id);
-            return (
-              <TouchableOpacity
-                key={thread.id}
-                style={styles.threadItem}
-                onPress={() => setSelectedThread(thread)}
-              >
-                <View style={styles.threadHeader}>
-                  <View style={styles.threadInfo}>
-                    <Text style={styles.threadName}>{thread.participantName}</Text>
-                    <Text style={styles.threadRole}>{thread.participantRole}</Text>
+      <ScrollView style={styles.scrollView}>
+        {/* Coach/Provider Messages */}
+        <Text style={styles.sectionTitle}>Coach/Provider Messages</Text>
+        <View style={styles.messagesContainer}>
+          {messages.map((message) => (
+            <View key={message.id} style={styles.messageCard}>
+              <View style={styles.messageHeader}>
+                <View style={styles.senderInfo}>
+                  <View style={[styles.avatar, { backgroundColor: message.sender.color }]}>
+                    <Text style={styles.avatarText}>{message.sender.initials}</Text>
                   </View>
-                  {thread.unreadCount > 0 && (
-                    <View style={styles.unreadBadge}>
-                      <Text style={styles.unreadCount}>{thread.unreadCount}</Text>
+                  <View style={styles.senderDetails}>
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.senderName}>{message.sender.name}</Text>
+                      {message.isNew && (
+                        <View style={styles.newBadge}>
+                          <Text style={styles.newBadgeText}>New</Text>
+                        </View>
+                      )}
                     </View>
-                  )}
+                    <Text style={styles.senderRole}>{message.sender.role}</Text>
+                  </View>
                 </View>
-                <Text style={styles.threadPreview} numberOfLines={2}>
-                  {thread.lastMessage.text}
-                </Text>
-                <Text style={styles.threadTime}>
-                  {new Date(thread.lastMessage.timestamp).toLocaleString()}
-                </Text>
-                {canReply(thread) && (
-                  <Text style={styles.canReplyText}>✓ You can reply</Text>
+                <Text style={styles.messageTime}>{message.time}</Text>
+              </View>
+              <Text style={styles.messageText}>{message.message}</Text>
+              <View style={styles.messageFooter}>
+                {message.isReadOnly ? (
+                  <View style={styles.readOnlyBadge}>
+                    <Text style={styles.readOnlyText}>Read-only</Text>
+                  </View>
+                ) : message.canReply && (
+                  <TouchableOpacity style={styles.replyButton}>
+                    <Ionicons name="chatbubble-outline" size={20} color="#8B5CF6" />
+                    <Text style={styles.replyButtonText}>Reply</Text>
+                  </TouchableOpacity>
                 )}
-                {!canReply(thread) && (
-                  <Text style={styles.readOnlyText}>Read-only</Text>
-                )}
-              </TouchableOpacity>
-            );
-          })}
+              </View>
+            </View>
+          ))}
         </View>
 
-        {/* System Messages */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>System Messages</Text>
-          <Text style={styles.sectionSubtitle}>Plan updates, alerts, appointment reminders</Text>
-          
-          {systemMessages.map((msg) => (
-            <TouchableOpacity
-              key={msg.id}
-              style={[
-                styles.systemMessageItem,
-                !msg.read && styles.systemMessageUnread,
-                msg.type === 'emergency' && styles.emergencyMessage,
-              ]}
-            >
-              <View style={styles.systemMessageHeader}>
-                <Text style={styles.systemMessageTitle}>{msg.title}</Text>
-                {!msg.read && <View style={styles.unreadDot} />}
+        {/* Message Alerts */}
+        <Text style={styles.sectionTitle}>Message Alerts</Text>
+        <View style={styles.alertsContainer}>
+          {alerts.map((alert) => (
+            <View key={alert.id} style={styles.alertCard}>
+              <View style={[styles.alertIcon, { backgroundColor: alert.color }]}>
+                <Ionicons name={alert.icon} size={24} color={alert.iconColor} />
               </View>
-              <Text style={styles.systemMessageText}>{msg.message}</Text>
-              <Text style={styles.systemMessageTime}>
-                {new Date(msg.timestamp).toLocaleString()}
-              </Text>
-            </TouchableOpacity>
+              <View style={styles.alertContent}>
+                <Text style={styles.alertTitle}>{alert.title}</Text>
+                <Text style={styles.alertDescription}>{alert.description}</Text>
+                <Text style={styles.alertTime}>{alert.time}</Text>
+              </View>
+            </View>
           ))}
         </View>
 
         {/* Quick Contacts */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Quick Contacts</Text>
+        <View style={styles.quickContactsSection}>
+          <Text style={styles.sectionTitle}>Quick Contacts</Text>
+          <Text style={styles.contactsDescription}>
+            Reach out for questions or updates about your child's progress.
+          </Text>
           {quickContacts.map((contact) => (
-            <TouchableOpacity key={contact.id} style={styles.contactItem}>
-              <View style={styles.contactInfo}>
-                <Text style={styles.contactName}>{contact.name}</Text>
-                <Text style={styles.contactRole}>{contact.role}</Text>
-                <Text style={styles.contactHours}>{contact.officeHours}</Text>
+            <View key={contact.id} style={styles.contactCard}>
+              <View style={styles.contactHeader}>
+                <View style={[styles.avatar, { backgroundColor: contact.color }]}>
+                  <Text style={styles.avatarText}>{contact.initials}</Text>
+                </View>
+                <View style={styles.contactInfo}>
+                  <Text style={styles.contactName}>{contact.name}</Text>
+                  <Text style={styles.contactRole}>{contact.role}</Text>
+                </View>
               </View>
               <View style={styles.contactActions}>
                 <TouchableOpacity style={styles.contactButton}>
-                  <Text style={styles.contactButtonText}>📞 Call</Text>
+                  <Ionicons name="call-outline" size={20} color="#8B5CF6" />
+                  <Text style={styles.contactButtonText}>Call</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.contactButton}>
-                  <Text style={styles.contactButtonText}>✉️ Email</Text>
+                <TouchableOpacity style={[styles.contactButton, styles.emailButton]}>
+                  <Ionicons name="mail-outline" size={20} color="white" />
+                  <Text style={styles.emailButtonText}>Email</Text>
                 </TouchableOpacity>
               </View>
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
       </ScrollView>
-
-      {/* Message Detail Modal */}
-      <Modal
-        visible={selectedThread !== null}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setSelectedThread(null)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            {selectedThread && (
-              <>
-                <View style={styles.modalHeader}>
-                  <View>
-                    <Text style={styles.modalTitle}>{selectedThread.participantName}</Text>
-                    <Text style={styles.modalSubtitle}>{selectedThread.participantRole}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setSelectedThread(null)}
-                    style={styles.closeButton}
-                  >
-                    <Text style={styles.closeButtonText}>✕</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <ScrollView style={styles.modalMessages}>
-                  {getThreadHistory(selectedThread.id).map((message) => (
-                    <View
-                      key={message.id}
-                      style={[
-                        styles.messageBubble,
-                        message.sender === 'You' && styles.messageBubbleSent,
-                      ]}
-                    >
-                      <Text style={styles.messageSender}>{message.sender}</Text>
-                      <Text style={styles.messageText}>{message.text}</Text>
-                      <Text style={styles.messageTime}>
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-
-                {canReply(selectedThread) && (
-                  <View style={styles.replyContainer}>
-                    <TextInput
-                      style={styles.replyInput}
-                      placeholder="Type a reply..."
-                      placeholderTextColor={colors.textSecondary}
-                      value={replyText}
-                      onChangeText={setReplyText}
-                      multiline
-                    />
-                    <TouchableOpacity
-                      style={styles.sendButton}
-                      onPress={handleSendReply}
-                    >
-                      <Text style={styles.sendButtonText}>Send</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {!canReply(selectedThread) && (
-                  <View style={styles.readOnlyContainer}>
-                    <Text style={styles.readOnlyMessage}>
-                      This conversation is read-only. Contact the provider directly for questions.
-                    </Text>
-                  </View>
-                )}
-              </>
-            )}
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 };
@@ -233,159 +222,185 @@ const MessagesTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F4F6',
   },
   scrollView: {
     flex: 1,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
     padding: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  sectionSubtitle: {
-    fontSize: 12,
-    color: colors.textSecondary,
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#111827',
     marginBottom: 16,
   },
-  threadItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  messagesContainer: {
+    marginBottom: 24,
   },
-  threadHeader: {
+  messageCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+  },
+  messageHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  senderInfo: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
   },
-  threadInfo: {
-    flex: 1,
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
-  threadName: {
+  avatarText: {
+    color: 'white',
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
-    marginBottom: 2,
   },
-  threadRole: {
-    fontSize: 12,
-    color: colors.textSecondary,
+  senderDetails: {
+    flex: 1,
   },
-  unreadBadge: {
-    backgroundColor: colors.secondary,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    minWidth: 24,
+  nameContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  unreadCount: {
-    color: colors.white,
-    fontSize: 12,
+  senderName: {
+    fontSize: 16,
     fontWeight: '600',
+    color: '#111827',
   },
-  threadPreview: {
+  senderRole: {
     fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 4,
+    color: '#6B7280',
   },
-  threadTime: {
-    fontSize: 11,
-    color: colors.textSecondary,
+  messageTime: {
+    fontSize: 14,
+    color: '#6B7280',
   },
-  canReplyText: {
-    fontSize: 11,
-    color: colors.success,
-    marginTop: 4,
-    fontWeight: '600',
+  messageText: {
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+    marginBottom: 12,
+  },
+  messageFooter: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  newBadge: {
+    backgroundColor: '#8B5CF6',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  newBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  readOnlyBadge: {
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   readOnlyText: {
-    fontSize: 11,
-    color: colors.textSecondary,
-    marginTop: 4,
-    fontStyle: 'italic',
+    color: '#6B7280',
+    fontSize: 14,
   },
-  systemMessageItem: {
-    paddingVertical: 12,
+  replyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F3FF',
     paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: colors.background,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 6,
+  },
+  replyButtonText: {
+    color: '#8B5CF6',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  alertsContainer: {
+    marginBottom: 24,
+  },
+  alertCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+  },
+  alertIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  alertContent: {
+    flex: 1,
+  },
+  alertTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  alertDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  alertTime: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  quickContactsSection: {
+    marginBottom: 24,
+  },
+  contactsDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  contactCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
     marginBottom: 12,
   },
-  systemMessageUnread: {
-    backgroundColor: colors.background,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.secondary,
-  },
-  emergencyMessage: {
-    backgroundColor: '#FFF3E0',
-    borderLeftColor: colors.error,
-  },
-  systemMessageHeader: {
+  contactHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
-  },
-  systemMessageTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.secondary,
-  },
-  systemMessageText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  systemMessageTime: {
-    fontSize: 10,
-    color: colors.textSecondary,
-  },
-  contactItem: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    marginBottom: 16,
   },
   contactInfo: {
-    marginBottom: 12,
+    flex: 1,
+    marginLeft: 12,
   },
   contactName: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
+    color: '#111827',
     marginBottom: 4,
   },
   contactRole: {
     fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 2,
-  },
-  contactHours: {
-    fontSize: 12,
-    color: colors.textSecondary,
+    color: '#6B7280',
   },
   contactActions: {
     flexDirection: 'row',
@@ -393,123 +408,27 @@ const styles = StyleSheet.create({
   },
   contactButton: {
     flex: 1,
-    paddingVertical: 10,
-    backgroundColor: colors.secondary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
-  },
-  contactButtonText: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '90%',
-    paddingBottom: 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.text,
-  },
-  modalSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginTop: 4,
-  },
-  closeButton: {
-    padding: 8,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: colors.textSecondary,
-  },
-  modalMessages: {
-    flex: 1,
-    padding: 16,
-    maxHeight: 400,
-  },
-  messageBubble: {
-    backgroundColor: colors.background,
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-    maxWidth: '80%',
-  },
-  messageBubbleSent: {
-    backgroundColor: colors.secondary,
-    alignSelf: 'flex-end',
-  },
-  messageSender: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  messageText: {
-    fontSize: 14,
-    color: colors.text,
-    marginBottom: 4,
-  },
-  messageTime: {
-    fontSize: 10,
-    color: colors.textSecondary,
-  },
-  replyContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
+    backgroundColor: '#F5F3FF',
     gap: 8,
   },
-  replyInput: {
-    flex: 1,
-    backgroundColor: colors.background,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    maxHeight: 100,
+  contactButtonText: {
+    color: '#8B5CF6',
+    fontSize: 16,
+    fontWeight: '500',
   },
-  sendButton: {
-    backgroundColor: colors.secondary,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    justifyContent: 'center',
+  emailButton: {
+    backgroundColor: '#8B5CF6',
   },
-  sendButtonText: {
-    color: colors.white,
-    fontWeight: '600',
-  },
-  readOnlyContainer: {
-    padding: 16,
-    backgroundColor: colors.background,
-    margin: 16,
-    borderRadius: 8,
-  },
-  readOnlyMessage: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    fontStyle: 'italic',
+  emailButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
 
 export default MessagesTab;
-
