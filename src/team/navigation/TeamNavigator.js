@@ -1,17 +1,18 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
 
 // Import screens
 import HomeScreen from '../screens/HomeScreen';
-import SessionsScreen from '../screens/SessionsScreen';
+import SessionNavigator from './SessionNavigator';
 import PlanScreen from '../screens/PlanScreen';
-import TeamScreen from '../screens/TeamScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import CommunityScreen from '../screens/CommunityScreen';
 
 const Tab = createBottomTabNavigator();
 
-const TeamNavigator = () => {
+const UserNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -44,15 +45,21 @@ const TeamNavigator = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          headerTitle: 'Team Portal',
+          headerTitle: 'Home',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
-        name="Sessions"
-        component={SessionsScreen}
+        name="Session"
+        component={SessionNavigator}
         options={{
-          tabBarLabel: 'Sessions',
-          headerTitle: 'Team Sessions',
+          tabBarLabel: 'Session',
+          headerShown: false,
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'play-circle' : 'play-circle-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
@@ -60,28 +67,26 @@ const TeamNavigator = () => {
         component={PlanScreen}
         options={{
           tabBarLabel: 'Plan',
-          headerTitle: 'Team Plan',
+          headerTitle: 'Daily Plan',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} size={24} color={color} />
+          ),
         }}
       />
       <Tab.Screen
-        name="Team"
-        component={TeamScreen}
+        name="Community"
+        component={CommunityScreen}
         options={{
-          tabBarLabel: 'Team',
-          headerTitle: 'Team Hub',
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: 'Settings',
-          headerTitle: 'Settings',
+          tabBarLabel: 'Community',
+          headerTitle: 'Community',
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'people' : 'people-outline'} size={24} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>
   );
 };
 
-export default TeamNavigator;
+export default UserNavigator;
 
