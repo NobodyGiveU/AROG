@@ -6,174 +6,239 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import colors from '../../../colors';
-import { childProfile, riskScore, adherenceStats, dailyActivity } from '../data/childData';
-import { alerts as alertsData } from '../data/alertsData';
 
 const HomeTab = () => {
-  const [selectedChild, setSelectedChild] = useState(1);
-
-  // Dummy data - multiple children
+  const [selectedChild, setSelectedChild] = useState('Emma Johnson (14)');
+  
   const children = [
-    { id: 1, name: 'Emma Johnson', age: 14 },
-    { id: 2, name: 'Alex Johnson', age: 16 },
+    { id: 1, name: 'Emma Johnson (14)', age: 14 },
+    { id: 2, name: 'Alex Johnson (16)', age: 16 },
   ];
 
-  // Filter alerts for today
-  const todayAlerts = alertsData.filter((alert) => !alert.read).slice(0, 5);
+  const alerts = [
+    {
+      id: 1,
+      type: 'error',
+      title: 'Exercise Session Missed',
+      description: 'Emma missed the evening stretch session. Please review the plan.',
+      time: '8:00 AM',
+      icon: 'alert-circle',
+      color: '#FF4444'
+    },
+    {
+      id: 2,
+      type: 'warning',
+      title: 'Risk Score Update',
+      description: "Emma's risk score has been updated. Current score: 6.5/10 (Moderate Risk).",
+      time: '10:30 AM',
+      icon: 'trending-up',
+      color: '#FF9800'
+    },
+    {
+      id: 3,
+      type: 'info',
+      title: 'Weekly Report Available',
+      description: "Emma's weekly progress report for January 8-14 is now available to view.",
+      time: '7:00 AM',
+      icon: 'document-text',
+      color: '#2196F3'
+    }
+  ];
 
-  const getRiskColor = () => {
-    if (riskScore.status.includes('Low')) return colors.success; // Green
-    if (riskScore.status.includes('High')) return colors.error; // Red
-    return '#FF9800'; // Orange for Moderate
-  };
+  const quickActions = [
+    {
+      id: 1,
+      title: 'Send Encouragement',
+      icon: 'paper-plane',
+      color: '#8B5CF6',
+      borderColor: '#EDE9FE'
+    },
+    {
+      id: 2,
+      title: 'Set Reminder',
+      icon: 'notifications',
+      color: '#10B981',
+      borderColor: '#ECFDF5'
+    },
+    {
+      id: 3,
+      title: 'View Plan',
+      icon: 'document-text',
+      color: '#3B82F6',
+      borderColor: '#EFF6FF'
+    },
+    {
+      id: 4,
+      title: 'Contact Coach',
+      icon: 'chatbubble',
+      color: '#F97316',
+      borderColor: '#FFF7ED'
+    }
+  ];
 
-  const todaysExercises = [
-    { id: 1, name: 'Morning Exercise Routine', time: '8:00 AM', completed: true },
-    { id: 2, name: 'Pain Assessment', time: '12:00 PM', completed: false },
-    { id: 3, name: 'Evening Stretch', time: '6:00 PM', completed: false },
+  const todaysActivities = [
+    { id: 1, title: 'Morning Exercise Routine', time: '8:00 AM', status: 'done' },
+    { id: 2, title: 'Pain Assessment', time: '12:00 PM', status: 'pending' },
+    { id: 3, title: 'Evening Stretch', time: '6:00 PM', status: 'pending' }
   ];
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Child Switcher */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Select Child</Text>
-          <View style={styles.childSwitcher}>
-            {children.map((child) => (
-              <TouchableOpacity
-                key={child.id}
-                style={[
-                  styles.childButton,
-                  selectedChild === child.id && styles.childButtonActive,
-                ]}
-                onPress={() => setSelectedChild(child.id)}
-              >
-                <Text
-                  style={[
-                    styles.childButtonText,
-                    selectedChild === child.id && styles.childButtonTextActive,
-                  ]}
-                >
-                  {child.name} ({child.age})
-                </Text>
-              </TouchableOpacity>
-            ))}
+        {/* Parent Engagement Card */}
+        <View style={styles.engagementCard}>
+          <View style={styles.engagementHeader}>
+            <Ionicons name="flame" size={24} color="#FFD700" />
+            <Text style={styles.engagementTitle}>Parent Engagement</Text>
+            <Ionicons name="bookmark-outline" size={24} color="white" style={styles.bookmarkIcon} />
           </View>
-        </View>
-
-        {/* Risk Banner */}
-        <View style={[styles.card, styles.riskBanner, { borderLeftColor: getRiskColor() }]}>
-          <View style={styles.riskHeader}>
-            <Text style={styles.riskLabel}>Current Injury Risk</Text>
-            <View style={[styles.riskBadge, { backgroundColor: getRiskColor() }]}>
-              <Text style={styles.riskBadgeText}>{riskScore.status}</Text>
-            </View>
+          <Text style={styles.engagementText}>You've checked in 5 times this week</Text>
+          <View style={styles.streakContainer}>
+            <Text style={styles.streakNumber}>7</Text>
+            <Text style={styles.streakText}>day streak</Text>
           </View>
-          <Text style={styles.riskScore}>Risk Score: {riskScore.current}/10</Text>
-          <Text style={styles.riskTrend}>
-            Trend: {riskScore.trend === 'improving' ? '📈 Improving' : riskScore.trend === 'stable' ? '➡️ Stable' : '📉 Worsening'}
-          </Text>
-        </View>
-
-        {/* Compliance Tile */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Compliance</Text>
-          <View style={styles.complianceRow}>
-            <View style={styles.complianceStat}>
-              <Text style={styles.complianceValue}>{adherenceStats.currentWeek.completionRate.toFixed(0)}%</Text>
-              <Text style={styles.complianceLabel}>This Week</Text>
-            </View>
-            <View style={styles.complianceDivider} />
-            <View style={styles.complianceStat}>
-              <Text style={styles.complianceValue}>{adherenceStats.currentWeek.sessionsCompleted}</Text>
-              <Text style={styles.complianceLabel}>Sessions</Text>
-            </View>
-            <View style={styles.complianceDivider} />
-            <View style={styles.complianceStat}>
-              <Text style={styles.complianceValue}>7</Text>
-              <Text style={styles.complianceLabel}>Day Streak 🔥</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Today's Overview */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Today's Overview</Text>
-          {todaysExercises.map((exercise) => (
-            <View key={exercise.id} style={styles.exerciseItem}>
-              <View style={styles.exerciseItemLeft}>
-                <View
-                  style={[
-                    styles.checkbox,
-                    exercise.completed && styles.checkboxCompleted,
-                  ]}
-                >
-                  {exercise.completed && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-                <View style={styles.exerciseContent}>
-                  <Text style={styles.exerciseName}>{exercise.name}</Text>
-                  <Text style={styles.exerciseTime}>{exercise.time}</Text>
-                </View>
-              </View>
-              <Text style={styles.checkinStatus}>
-                {exercise.completed ? '✓ Checked in' : 'Pending'}
-              </Text>
-            </View>
-          ))}
+          <Text style={styles.encouragementText}>Keep supporting Emma!</Text>
         </View>
 
         {/* Alerts Feed */}
-        <View style={styles.card}>
-          <View style={styles.alertsHeader}>
-            <Text style={styles.cardTitle}>Alerts Feed</Text>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Alerts Feed</Text>
             <TouchableOpacity>
               <Text style={styles.seeAllText}>See All</Text>
             </TouchableOpacity>
           </View>
-          {todayAlerts.map((alert) => (
+          {alerts.map(alert => (
             <View key={alert.id} style={styles.alertItem}>
-              <View
-                style={[
-                  styles.alertIndicator,
-                  alert.type === 'success' && styles.alertSuccess,
-                  alert.type === 'warning' && styles.alertWarning,
-                  alert.type === 'important' && styles.alertImportant,
-                ]}
-              />
+              <View style={[styles.alertIcon, { backgroundColor: alert.color }]}>
+                <Ionicons name={alert.icon} size={20} color="white" />
+              </View>
               <View style={styles.alertContent}>
                 <Text style={styles.alertTitle}>{alert.title}</Text>
-                <Text style={styles.alertMessage}>{alert.message}</Text>
-                <Text style={styles.alertTime}>
-                  {new Date(alert.timestamp).toLocaleTimeString()}
-                </Text>
+                <Text style={styles.alertDescription}>{alert.description}</Text>
+                <Text style={styles.alertTime}>{alert.time}</Text>
               </View>
             </View>
           ))}
         </View>
 
         {/* Quick Actions */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Quick Actions</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <Text style={styles.quickActionIcon}>💌</Text>
-              <Text style={styles.quickActionText}>Send Encouragement</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <Text style={styles.quickActionIcon}>📋</Text>
-              <Text style={styles.quickActionText}>View Plan</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <Text style={styles.quickActionIcon}>⏰</Text>
-              <Text style={styles.quickActionText}>Set Reminder</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickActionButton}>
-              <Text style={styles.quickActionIcon}>👨‍⚕️</Text>
-              <Text style={styles.quickActionText}>Contact Coach</Text>
-            </TouchableOpacity>
+            {quickActions.map(action => (
+              <TouchableOpacity
+                key={action.id}
+                style={[styles.quickActionButton, { borderColor: action.borderColor }]}
+              >
+                <Ionicons name={action.icon} size={24} color={action.color} />
+                <Text style={[styles.quickActionText, { color: action.color }]}>{action.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Select Child */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Select Child</Text>
+          <View style={styles.childSelector}>
+            {children.map(child => (
+              <TouchableOpacity
+                key={child.id}
+                style={[
+                  styles.childButton,
+                  selectedChild === child.name && styles.childButtonActive
+                ]}
+                onPress={() => setSelectedChild(child.name)}
+              >
+                <Text
+                  style={[
+                    styles.childButtonText,
+                    selectedChild === child.name && styles.childButtonTextActive
+                  ]}
+                >
+                  {child.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Current Injury Risk */}
+          <View style={styles.riskCard}>
+            <View style={styles.riskHeader}>
+              <Text style={styles.riskTitle}>Current Injury Risk</Text>
+              <View style={styles.riskBadge}>
+                <Text style={styles.riskBadgeText}>Moderate Risk</Text>
+              </View>
+            </View>
+            <View style={styles.riskContent}>
+              <View style={styles.riskScoreCircle}>
+                <Text style={styles.riskScore}>6.5</Text>
+                <Text style={styles.riskScoreLabel}>/10</Text>
+              </View>
+              <View style={styles.riskInfo}>
+                <View style={styles.trendContainer}>
+                  <Ionicons name="pulse" size={16} color="#6B7280" />
+                  <Text style={styles.trendText}>Trend: Stable</Text>
+                </View>
+                <Text style={styles.riskDescription}>
+                  Based on recent activity patterns and recovery metrics
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Compliance Section */}
+          <View style={styles.complianceContainer}>
+            <View style={styles.complianceCard}>
+              <Text style={styles.complianceNumber}>86%</Text>
+              <Text style={styles.complianceLabel}>This Week</Text>
+            </View>
+            <View style={styles.complianceCard}>
+              <Text style={styles.complianceNumber}>5</Text>
+              <Text style={styles.complianceLabel}>Sessions</Text>
+            </View>
+            <View style={styles.complianceCard}>
+              <Text style={styles.complianceNumber}>7</Text>
+              <View style={styles.streakBadge}>
+                <Text style={styles.complianceLabel}>Day Streak</Text>
+                <Ionicons name="flame" size={16} color="#FF9800" />
+              </View>
+            </View>
+          </View>
+
+          {/* Today's Overview */}
+          <View style={styles.todaySection}>
+            <Text style={styles.sectionTitle}>Today's Overview</Text>
+            {todaysActivities.map(activity => (
+              <View key={activity.id} style={styles.activityItem}>
+                <View style={styles.activityIcon}>
+                  <Ionicons
+                    name={activity.status === 'done' ? 'checkmark-circle' : 'time'}
+                    size={24}
+                    color={activity.status === 'done' ? '#10B981' : '#6B7280'}
+                  />
+                </View>
+                <View style={styles.activityContent}>
+                  <Text style={styles.activityTitle}>{activity.title}</Text>
+                  <Text style={styles.activityTime}>{activity.time}</Text>
+                </View>
+                <View style={styles.activityStatus}>
+                  <Text
+                    style={[
+                      styles.activityStatusText,
+                      { color: activity.status === 'done' ? '#10B981' : '#6B7280' }
+                    ]}
+                  >
+                    {activity.status === 'done' ? 'Done' : 'Pending'}
+                  </Text>
+                </View>
+              </View>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -184,244 +249,285 @@ const HomeTab = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F3F4F6',
   },
   scrollView: {
     flex: 1,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
     padding: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text,
+  engagementCard: {
+    backgroundColor: '#8B5CF6',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+  },
+  engagementHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 12,
   },
-  childSwitcher: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  childButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: colors.background,
-    borderWidth: 2,
-    borderColor: colors.border,
-    alignItems: 'center',
-  },
-  childButtonActive: {
-    backgroundColor: colors.secondary,
-    borderColor: colors.secondary,
-  },
-  childButtonText: {
-    fontSize: 14,
+  engagementTitle: {
+    color: 'white',
+    fontSize: 24,
     fontWeight: '600',
-    color: colors.text,
+    marginLeft: 8,
+    flex: 1,
   },
-  childButtonTextActive: {
-    color: colors.white,
+  bookmarkIcon: {
+    marginLeft: 'auto',
   },
-  riskBanner: {
-    borderLeftWidth: 4,
-    backgroundColor: colors.background,
+  engagementText: {
+    color: 'white',
+    fontSize: 16,
+    opacity: 0.9,
+    marginBottom: 16,
   },
-  riskHeader: {
+  streakContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'baseline',
     marginBottom: 8,
   },
-  riskLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  riskBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  riskBadgeText: {
-    color: colors.white,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  riskScore: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 4,
-  },
-  riskTrend: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  complianceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  complianceStat: {
-    alignItems: 'center',
-  },
-  complianceValue: {
-    fontSize: 28,
+  streakNumber: {
+    color: 'white',
+    fontSize: 48,
     fontWeight: 'bold',
-    color: colors.secondary,
-    marginBottom: 4,
+    marginRight: 8,
   },
-  complianceLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
+  streakText: {
+    color: 'white',
+    fontSize: 20,
   },
-  complianceDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: colors.border,
+  encouragementText: {
+    color: 'white',
+    fontSize: 16,
+    opacity: 0.9,
   },
-  exerciseItem: {
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    marginBottom: 16,
   },
-  exerciseItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.border,
-    marginRight: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkboxCompleted: {
-    backgroundColor: colors.success,
-    borderColor: colors.success,
-  },
-  checkmark: {
-    color: colors.white,
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  exerciseContent: {
-    flex: 1,
-  },
-  exerciseName: {
-    fontSize: 16,
-    color: colors.text,
-    fontWeight: '500',
-  },
-  exerciseTime: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  checkinStatus: {
-    fontSize: 12,
-    color: colors.success,
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: '600',
-  },
-  alertsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    color: '#111827',
+    marginBottom: 16,
   },
   seeAllText: {
-    fontSize: 14,
-    color: colors.secondary,
-    fontWeight: '600',
+    color: '#8B5CF6',
+    fontSize: 16,
+    fontWeight: '500',
   },
   alertItem: {
     flexDirection: 'row',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
-  alertIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
+  alertIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 12,
-    marginTop: 6,
-  },
-  alertSuccess: {
-    backgroundColor: colors.success,
-  },
-  alertWarning: {
-    backgroundColor: '#F39C12',
-  },
-  alertImportant: {
-    backgroundColor: colors.error,
   },
   alertContent: {
     flex: 1,
   },
   alertTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
-    color: colors.text,
+    color: '#111827',
     marginBottom: 4,
   },
-  alertMessage: {
-    fontSize: 12,
-    color: colors.textSecondary,
+  alertDescription: {
+    fontSize: 14,
+    color: '#6B7280',
     marginBottom: 4,
   },
   alertTime: {
-    fontSize: 10,
-    color: colors.textSecondary,
+    fontSize: 14,
+    color: '#9CA3AF',
   },
   quickActionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
     gap: 12,
   },
   quickActionButton: {
-    width: '47%',
-    padding: 16,
-    backgroundColor: colors.background,
+    width: '48%',
+    backgroundColor: 'white',
     borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.border,
-  },
-  quickActionIcon: {
-    fontSize: 32,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   quickActionText: {
-    fontSize: 12,
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  childSelector: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    gap: 12,
+  },
+  childButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: '#F3F4F6',
+  },
+  childButtonActive: {
+    backgroundColor: '#8B5CF6',
+  },
+  childButtonText: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  childButtonTextActive: {
+    color: 'white',
+  },
+  riskCard: {
+    backgroundColor: '#FFFBEB',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  riskHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  riskTitle: {
+    fontSize: 18,
     fontWeight: '600',
-    color: colors.text,
-    textAlign: 'center',
+    color: '#111827',
+  },
+  riskBadge: {
+    backgroundColor: '#F97316',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  riskBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  riskContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  riskScoreCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 8,
+    borderColor: '#F97316',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  riskScore: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  riskScoreLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  riskInfo: {
+    flex: 1,
+  },
+  trendContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  trendText: {
+    marginLeft: 4,
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  riskDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  complianceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  complianceCard: {
+    flex: 1,
+    backgroundColor: '#F5F3FF',
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  complianceNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#8B5CF6',
+    marginBottom: 4,
+  },
+  complianceLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  activityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  activityIcon: {
+    marginRight: 12,
+  },
+  activityContent: {
+    flex: 1,
+  },
+  activityTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  activityTime: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  activityStatus: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: '#F3F4F6',
+  },
+  activityStatusText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 
 export default HomeTab;
-
