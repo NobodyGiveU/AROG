@@ -245,13 +245,14 @@ const styles = StyleSheet.create({
   },
   messageHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     marginBottom: 12,
+    width: '100%',
   },
   senderInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+    maxWidth: '75%',
   },
   avatar: {
     width: 40,
@@ -268,11 +269,13 @@ const styles = StyleSheet.create({
   },
   senderDetails: {
     flex: 1,
+    marginRight: 8,
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flexWrap: 'wrap',
   },
   senderName: {
     fontSize: 16,
@@ -286,12 +289,17 @@ const styles = StyleSheet.create({
   messageTime: {
     fontSize: 14,
     color: '#6B7280',
+    flexShrink: 0,
+    marginLeft: 'auto',
+    alignSelf: 'flex-start',
+    paddingTop: 4,
   },
   messageText: {
     fontSize: 16,
     color: '#374151',
     lineHeight: 24,
     marginBottom: 12,
+    width: '100%',
   },
   messageFooter: {
     flexDirection: 'row',
